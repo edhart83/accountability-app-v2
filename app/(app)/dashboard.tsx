@@ -59,7 +59,10 @@ export default function Dashboard() {
           <View style={[styles.overallProgress, isTablet && styles.tabletHalf]}>
             <Text style={styles.sectionTitle}>Overall Progress</Text>
             <View style={styles.progressContainer}>
-              <View style={styles.progressIndicator}>
+              <View style={[
+                styles.progressIndicator,
+                { width: isDesktop ? 180 : 150, height: isDesktop ? 180 : 150 }
+              ]}>
                 <Text style={styles.progressPercentage}>72%</Text>
                 <Text style={styles.progressLabel}>Complete</Text>
               </View>
@@ -186,8 +189,6 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   progressIndicator: {
-    width: isDesktop ? 180 : 150,
-    height: isDesktop ? 180 : 150,
     borderRadius: 90,
     backgroundColor: '#EBF5FF',
     alignItems: 'center',
