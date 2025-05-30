@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Calendar, Check, Clock } from 'lucide-react-native';
+import { Calendar } from 'lucide-react-native';
 import ProgressBar from '@/components/ui/ProgressBar';
 
 const GoalSummary = () => {
@@ -58,7 +58,9 @@ const GoalSummary = () => {
           </View>
           
           <View style={styles.progressRow}>
-            <ProgressBar progress={goal.progress} height={6} />
+            <View style={styles.progressBarContainer}>
+              <View style={[styles.progressBar, { width: `${goal.progress * 100}%` }]} />
+            </View>
             <Text style={styles.progressText}>{Math.round(goal.progress * 100)}%</Text>
           </View>
         </TouchableOpacity>
@@ -108,6 +110,18 @@ const styles = StyleSheet.create({
   progressRow: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  progressBarContainer: {
+    flex: 1,
+    height: 6,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: '#3B82F6',
+    borderRadius: 3,
   },
   progressText: {
     fontFamily: 'Inter-Medium',

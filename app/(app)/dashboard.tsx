@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useAuth } from '@/context/AuthContext';
-import { ChevronRight, Award, Star, Trophy, Calendar, Clock } from 'lucide-react-native';
-import ProgressCircle from '@/components/ui/ProgressCircle';
+import { ChevronRight, Award, Star, Trophy, Calendar } from 'lucide-react-native';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import GoalSummary from '@/components/dashboard/GoalSummary';
 
@@ -58,15 +57,9 @@ export default function Dashboard() {
 
         <View style={[styles.progressSection, isTablet && styles.tabletRow]}>
           <View style={[styles.overallProgress, isTablet && styles.tabletHalf]}>
-            <Text style={styles.sectionTitle}>Overall Progress 1</Text>
-            <View style={styles.progressCircleContainer}>
-              <ProgressCircle 
-                size={isDesktop ? 180 : 150}
-                progress={0.72} 
-                strokeWidth={16}
-                progressColor="#8B5CF6"
-              />
-              <View style={styles.progressTextContainer}>
+            <Text style={styles.sectionTitle}>Overall Progress</Text>
+            <View style={styles.progressContainer}>
+              <View style={styles.progressIndicator}>
                 <Text style={styles.progressPercentage}>72%</Text>
                 <Text style={styles.progressLabel}>Complete</Text>
               </View>
@@ -117,7 +110,7 @@ export default function Dashboard() {
               <Text style={styles.partnerStatus}>Next meeting: Tomorrow, 3:00 PM</Text>
             </View>
             <View style={styles.nextMeetingIndicator}>
-              <Clock size={14} color="#4B5563" style={styles.clockIcon} />
+              <Calendar size={14} color="#4B5563" style={styles.clockIcon} />
               <Text style={styles.nextMeetingText}>24h</Text>
             </View>
           </TouchableOpacity>
@@ -186,14 +179,17 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
-  progressCircleContainer: {
+  progressContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
     position: 'relative',
   },
-  progressTextContainer: {
-    position: 'absolute',
+  progressIndicator: {
+    width: isDesktop ? 180 : 150,
+    height: isDesktop ? 180 : 150,
+    borderRadius: 90,
+    backgroundColor: '#EBF5FF',
     alignItems: 'center',
     justifyContent: 'center',
   },

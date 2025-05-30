@@ -1,10 +1,10 @@
+// Temporarily disabled due to React DOM styling issues
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
 
 interface ProgressCircleProps {
   size: number;
-  progress: number; // 0 to 1
+  progress: number;
   strokeWidth: number;
   progressColor: string;
   backgroundColor?: string;
@@ -13,57 +13,38 @@ interface ProgressCircleProps {
 const ProgressCircle: React.FC<ProgressCircleProps> = ({
   size,
   progress,
-  strokeWidth,
   progressColor,
   backgroundColor = '#E5E7EB',
 }) => {
-  // Calculate radius and center point
-  const radius = (size - strokeWidth) / 2;
-  const center = size / 2;
-  
-  // Calculate circumference
-  const circumference = 2 * Math.PI * radius;
-  
-  // Calculate stroke dash offset based on progress
-  const strokeDashoffset = circumference * (1 - progress);
-
+  // Temporary placeholder component
   return (
-    <View style={styles.container}>
-      <Svg width={size} height={size}>
-        {/* Background circle */}
-        <Circle
-          cx={center}
-          cy={center}
-          r={radius}
-          stroke={backgroundColor}
-          strokeWidth={strokeWidth}
-          fill="transparent"
-        />
-        
-        {/* Progress circle */}
-        <Circle
-          cx={center}
-          cy={center}
-          r={radius}
-          stroke={progressColor}
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          rotation="-90"
-          originX={center}
-          originY={center}
-        />
-      </Svg>
+    <View style={[
+      styles.container,
+      {
+        width: size,
+        height: size,
+        backgroundColor,
+        borderRadius: size / 2,
+      }
+    ]}>
+      <View style={[
+        styles.progress,
+        {
+          backgroundColor: progressColor,
+          width: `${Math.min(Math.max(progress * 100, 0), 100)}%`,
+        }
+      ]} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    overflow: 'hidden',
     justifyContent: 'center',
-    alignItems: 'center',
+  },
+  progress: {
+    height: '100%',
   },
 });
 
