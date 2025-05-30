@@ -54,7 +54,6 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
           rotation="-90"
           originX={center}
           originY={center}
-          style={{ transformOrigin: 'center' }}
         />
       </Svg>
     </View>
