@@ -6,39 +6,95 @@ export default function PartnerDetails() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
 
-  // In a real app, this would fetch from an API or database
-  const partner = {
-    id: '1',
-    name: 'David Wilson',
-    image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg',
-    bio: 'Passionate about personal development and helping others achieve their goals. Certified life coach with 5 years of experience in productivity coaching.',
-    goals: ['Running', 'Learning React'],
-    achievements: [
-      { id: '1', title: '30-Day Streak', icon: Clock },
-      { id: '2', title: 'Goal Master', icon: Target },
-      { id: '3', title: 'Top Mentor', icon: Award },
-    ],
-    nextMeeting: 'Tomorrow, 3:00 PM',
-    stats: {
-      goalsCompleted: 12,
-      daysActive: 45,
-      successRate: '87%'
-    },
-    sharedGoals: [
-      {
-        id: '1',
-        title: 'Complete React Native Course',
-        progress: 0.65,
-        dueDate: '2025-05-15'
+  // Sample partner data
+  const partnersData = {
+    '1': {
+      id: '1',
+      name: 'David Wilson',
+      image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg',
+      bio: 'Passionate about personal development and helping others achieve their goals. Certified life coach with 5 years of experience in productivity coaching.',
+      goals: ['Running', 'Learning React'],
+      achievements: [
+        { id: '1', title: '30-Day Streak', icon: Clock },
+        { id: '2', title: 'Goal Master', icon: Target },
+        { id: '3', title: 'Top Mentor', icon: Award },
+      ],
+      nextMeeting: 'Tomorrow, 3:00 PM',
+      stats: {
+        goalsCompleted: 12,
+        daysActive: 45,
+        successRate: '87%'
       },
-      {
-        id: '2',
-        title: 'Run 5km Three Times a Week',
-        progress: 0.33,
-        dueDate: '2025-05-30'
-      }
-    ]
+      sharedGoals: [
+        {
+          id: '1',
+          title: 'Complete React Native Course',
+          progress: 0.65,
+          dueDate: '2025-05-15'
+        },
+        {
+          id: '2',
+          title: 'Run 5km Three Times a Week',
+          progress: 0.33,
+          dueDate: '2025-05-30'
+        }
+      ]
+    },
+    '2': {
+      id: '2',
+      name: 'Sarah Johnson',
+      image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg',
+      bio: 'Fitness enthusiast and language learning advocate. Dedicated to helping others achieve their health and educational goals.',
+      goals: ['Weight Training', 'Spanish'],
+      achievements: [
+        { id: '1', title: 'Fitness Pro', icon: Target },
+        { id: '2', title: 'Language Master', icon: Award },
+        { id: '3', title: 'Top Motivator', icon: Clock },
+      ],
+      nextMeeting: 'Friday, 5:30 PM',
+      stats: {
+        goalsCompleted: 15,
+        daysActive: 60,
+        successRate: '92%'
+      },
+      sharedGoals: [
+        {
+          id: '1',
+          title: 'Advanced Spanish Fluency',
+          progress: 0.45,
+          dueDate: '2025-06-30'
+        },
+        {
+          id: '2',
+          title: 'Complete Strength Training Program',
+          progress: 0.70,
+          dueDate: '2025-04-15'
+        }
+      ]
+    }
   };
+
+  const partner = partnersData[id as string];
+
+  if (!partner) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <ArrowLeft size={24} color="#1F2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Partner Not Found</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <View style={[styles.content, styles.centerContent]}>
+          <Text style={styles.errorText}>This partner profile does not exist.</Text>
+        </View>
+      </View>
+    );
+  }
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -170,6 +226,11 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  errorText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 16,
+    color: '#6B7280',
   },
   profileSection: {
     alignItems: 'center',
