@@ -126,12 +126,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (!authUser) throw new Error('No user returned from signUp.');
 
-    // Insert user profile
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .insert([
         {
-          id: authUser.id, // or use 'user_id' if your table is set up that way
+          id: authUser.id,
           name,
           email,
           interests: [],
@@ -146,12 +145,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (profileError) throw profileError;
 
-    // Insert default dashboard_data (optional)
+    // Insert dashboard data with initial stats
     const { error: dashboardError } = await supabase
       .from('dashboard_data')
-      .insert([{ id: authUser.id }]); // use 'user_id' if needed
+      .insert([{
+        id: authUser.id,
+        active_goals_count: 0,
+        overall_progress: 0,
+        stats: {
+          streak: 0,
+          points: 0,
+          level: 1
+        },
+        recent_activity: []
+      }]);
 
-    if (dashboardError) console.warn('Optional: failed to insert dashboard data', dashboardError.message);
+    if (dashboardError) throw dashboardError;
 
     setUser(profile);
     setIsAuthenticated(true);
