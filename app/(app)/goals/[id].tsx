@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ArrowLeft, Calendar, Clock, Target, CheckCircle, Edit2 } from 'lucide-react-native';
+import { ArrowLeft, Calendar, Clock, Target, CircleCheck as CheckCircle, CreditCard as Edit2 } from 'lucide-react-native';
 import ProgressBar from '@/components/ui/ProgressBar';
 
 export default function GoalDetails() {
