@@ -80,12 +80,12 @@ const Sidebar: React.FC<SidebarProps> = ({ routes, activeRoute, onLogout, isMore
       <View style={styles.footer}>
         <View style={styles.userInfo}>
           <Image
-            source={{ uri: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' }}
+            source={{ uri: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg' }}
             style={styles.userAvatar}
           />
           <View style={styles.userTextContainer}>
-            <Text style={styles.userName}>John Doe</Text>
-            <Text style={styles.userEmail}>john.doe@example.com</Text>
+            <Text style={styles.userName}>{user?.name || 'User'}</Text>
+            <Text style={styles.userEmail}>{user?.email}</Text>
           </View>
         </View>
 

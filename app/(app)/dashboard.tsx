@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/utils/supabase';
 import { ChevronRight, Award, Star, Trophy, Calendar } from 'lucide-react-native';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import GoalSummary from '@/components/dashboard/GoalSummary';
@@ -13,6 +14,8 @@ export default function Dashboard() {
   const isTablet = width >= 768;
   const isDesktop = width >= 1024;
   const { user } = useAuth();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [greeting, setGreeting] = useState('');
 
   useEffect(() => {
@@ -20,14 +23,35 @@ export default function Dashboard() {
     if (hour < 12) setGreeting('Good morning');
     else if (hour < 18) setGreeting('Good afternoon');
     else setGreeting('Good evening');
+
+    if (user) {
+      fetchDashboardData();
+    }
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('dashboard_data')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      setDashboardData(data);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Sample data
   const stats = [
     { title: 'Streak', value: '7 days', icon: Calendar },
-    { title: 'Goals', value: '3 active', icon: Trophy },
-    { title: 'Points', value: '345', icon: Star },
-    { title: 'Level', value: '5', icon: Award },
+    { title: 'Goals', value: `${dashboardData?.active_goals_count || 0} active`, icon: Trophy },
+    { title: 'Points', value: dashboardData?.stats?.points || '0', icon: Star },
+    { title: 'Level', value: dashboardData?.stats?.level || '1', icon: Award },
   ];
 
   const renderStats = () => {

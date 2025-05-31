@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Menu } from 'lucide-react-native';
+import { useAuth } from '@/context/AuthContext';
 
 interface RouteItem {
   name: string;
@@ -17,6 +18,7 @@ interface MobileHeaderProps {
 
 const MobileHeader: React.FC<MobileHeaderProps> = ({ activeRoute, onMenuPress }) => {
   const router = useRouter();
+  const { user } = useAuth();
   
   // Get the title based on the active route
   const getTitle = () => {
@@ -44,7 +46,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeRoute, onMenuPress })
       
       <TouchableOpacity style={styles.profileButton}>
         <Image 
-          source={{ uri: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" }} 
+          source={{ uri: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg" }} 
           style={styles.profileImage} 
         />
       </TouchableOpacity>
