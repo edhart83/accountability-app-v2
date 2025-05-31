@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { View, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, useWindowDimensions, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { usePathname, useRouter, Tabs } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { Chrome as Home, Target, Blocks, Users, Menu } from 'lucide-react-native';
+import { Chrome as Home, Target, Blocks, Users, Menu, X } from 'lucide-react-native';
 import Sidebar from '@/components/layout/Sidebar';
 import MobileHeader from '@/components/layout/MobileHeader';
 
@@ -26,7 +26,6 @@ export default function AppLayout() {
     { name: 'goals', label: 'Goals', icon: Target },
     { name: 'courses', label: 'Courses', icon: Blocks },
     { name: 'partners', label: 'Partners', icon: Users },
-    { name: 'more', label: 'More', icon: Menu },
   ];
 
   return (
@@ -60,17 +59,16 @@ export default function AppLayout() {
           <Tabs
             screenOptions={{
               headerShown: false,
-              tabBarStyle: [styles.tabBar],
+              tabBarStyle: styles.tabBar,
               tabBarActiveTintColor: '#3B82F6',
-              tabBarInactiveTintColor: '#9CA3AF',
-              tabBarShowLabel: true,
+              tabBarInactiveTintColor: '#6B7280',
+              tabBarShowLabel: false,
               tabBarItemStyle: styles.tabBarItem,
             }}
           >
             <Tabs.Screen
               name="dashboard/index"
               options={{
-                tabBarLabel: 'Dashboard',
                 tabBarIcon: ({ color, focused }) => (
                   <View style={styles.tabIconContainer}>
                     <Home size={24} color={color} />
@@ -82,7 +80,6 @@ export default function AppLayout() {
             <Tabs.Screen
               name="goals"
               options={{
-                tabBarLabel: 'Goals',
                 tabBarIcon: ({ color, focused }) => (
                   <View style={styles.tabIconContainer}>
                     <Target size={24} color={color} />
@@ -94,7 +91,6 @@ export default function AppLayout() {
             <Tabs.Screen
               name="courses"
               options={{
-                tabBarLabel: 'Courses',
                 tabBarIcon: ({ color, focused }) => (
                   <View style={styles.tabIconContainer}>
                     <Blocks size={24} color={color} />
@@ -106,7 +102,6 @@ export default function AppLayout() {
             <Tabs.Screen
               name="partners/index"
               options={{
-                tabBarLabel: 'Partners',
                 tabBarIcon: ({ color, focused }) => (
                   <View style={styles.tabIconContainer}>
                     <Users size={24} color={color} />
@@ -118,10 +113,13 @@ export default function AppLayout() {
             <Tabs.Screen
               name="more/index"
               options={{
-                tabBarLabel: 'More',
                 tabBarIcon: ({ color, focused }) => (
                   <View style={styles.tabIconContainer}>
-                    <Menu size={24} color={color} />
+                    {isMoreOpen ? (
+                      <X size={24} color={color} />
+                    ) : (
+                      <Menu size={24} color={color} />
+                    )}
                     {focused && <View style={styles.activeIndicator} />}
                   </View>
                 ),
@@ -151,24 +149,27 @@ const styles = StyleSheet.create({
   tabBar: {
     height: 64,
     backgroundColor: '#FFFFFF',
-    borderTopWidth: 0.5,
+    borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingVertical: 8,
+    ...(Platform.OS === 'web' && {
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+    }),
   },
   tabBarItem: {
     height: 48,
-    paddingTop: 0,
   },
   tabIconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 24,
-    marginBottom: 4,
+    height: 48,
   },
   activeIndicator: {
     position: 'absolute',
-    bottom: -12,
+    bottom: -8,
     width: 4,
     height: 4,
     borderRadius: 2,
