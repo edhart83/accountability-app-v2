@@ -56,18 +56,6 @@ export default function More() {
           color: '#6B7280',
           onPress: () => router.push('/settings')
         },
-        { 
-          label: 'Notifications', 
-          icon: Bell, 
-          color: '#EF4444', 
-          onPress: () => router.push('/notifications')
-        },
-        { 
-          label: 'Privacy', 
-          icon: Shield, 
-          color: '#3B82F6', 
-          onPress: () => router.push('/privacy')
-        },
       ],
     },
     {
