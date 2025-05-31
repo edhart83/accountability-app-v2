@@ -16,6 +16,7 @@ const categories = [
 export default function AddGoal() {
   const router = useRouter();
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [dueDate, setDueDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -34,6 +35,7 @@ export default function AddGoal() {
     const newGoal = {
       id: Date.now().toString(),
       title: title.trim(),
+      description: description.trim(),
       category,
       dueDate: dueDate.toISOString().split('T')[0],
       progress: 0,
@@ -77,6 +79,23 @@ export default function AddGoal() {
             placeholder="Enter your goal"
             placeholderTextColor="#9CA3AF"
           />
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Describe your goal in detail..."
+            placeholderTextColor="#9CA3AF"
+            multiline
+            numberOfLines={4}
+            textAlignVertical="top"
+          />
+          <Text style={styles.helperText}>
+            Add specific details, milestones, or any additional information about your goal
+          </Text>
         </View>
 
         <View style={styles.formGroup}>
@@ -205,6 +224,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter-Regular',
     color: '#1F2937',
+  },
+  textArea: {
+    minHeight: 120,
+    paddingTop: 12,
+  },
+  helperText: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 4,
   },
   categoriesContainer: {
     flexDirection: 'row',
