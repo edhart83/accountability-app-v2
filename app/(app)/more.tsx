@@ -60,13 +60,13 @@ export default function More() {
           label: 'Notifications', 
           icon: Bell, 
           color: '#EF4444', 
-          onPress: () => {} 
+          onPress: () => router.push('/notifications')
         },
         { 
           label: 'Privacy', 
           icon: Shield, 
           color: '#3B82F6', 
-          onPress: () => {} 
+          onPress: () => router.push('/privacy')
         },
       ],
     },
@@ -77,7 +77,7 @@ export default function More() {
           label: 'Help Center', 
           icon: HelpCircle, 
           color: '#8B5CF6', 
-          onPress: () => {} 
+          onPress: () => router.push('/help')
         },
         { 
           label: 'Rate App', 
