@@ -140,7 +140,11 @@ export default function Partners() {
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Partner Requests</Text>
                 {requests.map(request => (
-                  <View key={request.id} style={styles.requestCard}>
+                  <TouchableOpacity 
+                    key={request.id} 
+                    style={styles.requestCard}
+                    onPress={() => router.push(`/partners/${request.id}`)}
+                  >
                     <Image source={{ uri: request.image }} style={styles.partnerImage} />
                     <View style={styles.requestDetails}>
                       <Text style={styles.partnerName}>{request.name}</Text>
@@ -161,7 +165,7 @@ export default function Partners() {
                         <Text style={styles.acceptText}>Accept</Text>
                       </TouchableOpacity>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             )}
