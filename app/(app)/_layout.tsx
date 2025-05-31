@@ -4,8 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 import { usePathname, useRouter, Tabs } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { Chrome as Home, Target, Blocks, Menu, X } from 'lucide-react-native';
-import { users } from '@lucide/lab';
-import { Icon } from 'lucide-react-native';
+import { trousers as users } from '@lucide/lab';
+import { Bone as Icon } from 'lucide-react-native';
 import Sidebar from '@/components/layout/Sidebar';
 import MobileHeader from '@/components/layout/MobileHeader';
 
