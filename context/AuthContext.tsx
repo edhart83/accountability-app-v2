@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '@/utils/supabase';
 
 // Define types
 type User = {
@@ -7,6 +8,7 @@ type User = {
   name: string;
   username: string;
   email: string;
+  created_at: string;
 };
 
 type AuthContextType = {
@@ -34,45 +36,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
 
-  // Check for existing session on mount
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const userData = await AsyncStorage.getItem('user');
-        if (userData) {
-          setUser(JSON.parse(userData));
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+
+          setUser(profile);
           setIsAuthenticated(true);
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
         }
-      } catch (error) {
-        console.error('Error checking auth status:', error);
-      } finally {
         setIsLoading(false);
       }
-    };
+    );
 
-    checkAuthStatus();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // Login function
   const login = async (username: string, password: string) => {
     setIsLoading(true);
     try {
-      // In a real app, you would call an API here
-      // Simulating API call with a timeout
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user data (in a real app, this would come from the API)
-      const userData: User = {
-        id: '1',
-        name: 'John Doe',
-        username,
-        email: 'john.doe@example.com',
-      };
-      
-      // Store user data
-      await AsyncStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      setIsAuthenticated(true);
+      const { data: { user: authUser }, error: signInError } = await supabase.auth
+        .signInWithPassword({
+          email: username,
+          password: password,
+        });
+
+      if (signInError) throw signInError;
+
+      if (authUser) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authUser.id)
+          .single();
+
+        if (profileError) throw profileError;
+        setUser(profile);
+        setIsAuthenticated(true);
+      }
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -81,26 +92,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Register function
   const register = async (name: string, username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      // In a real app, you would call an API here
-      // Simulating API call with a timeout
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user data (in a real app, this would come from the API)
-      const userData: User = {
-        id: '1',
-        name,
-        username,
-        email,
-      };
-      
-      // Store user data
-      await AsyncStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      setIsAuthenticated(true);
+      const { data: { user: authUser }, error: signUpError } = await supabase.auth
+        .signUp({
+          email,
+          password,
+        });
+
+      if (signUpError) throw signUpError;
+
+      if (authUser) {
+        // Create profile
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: authUser.id,
+              name,
+              username,
+              email,
+            }
+          ])
+          .select()
+          .single();
+
+        if (profileError) throw profileError;
+
+        // Create dashboard data
+        await supabase
+          .from('dashboard_data')
+          .insert([{ id: authUser.id }]);
+
+        setUser(profile);
+        setIsAuthenticated(true);
+      }
     } catch (error) {
       console.error('Registration error:', error);
       throw error;
@@ -109,14 +136,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Logout function
   const logout = async () => {
     setIsLoading(true);
     try {
-      await AsyncStorage.removeItem('user');
-      setUser(null);
-      setIsAuthenticated(false);
-    } catch (error) {
+      await supabase.auth.signOut();
+    } catch (error: any) {
       console.error('Logout error:', error);
     } finally {
       setIsLoading(false);
