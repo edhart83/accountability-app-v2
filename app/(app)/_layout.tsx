@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { View, StyleSheet, useWindowDimensions, Platform } from 'react-native';
+import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { usePathname, useRouter, Tabs } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { Chrome as Home, Target, Blocks, Users, Menu, X } from 'lucide-react-native';
+import { Home, Target, Blocks, Users, Menu } from 'lucide-react-native';
 import Sidebar from '@/components/layout/Sidebar';
 import MobileHeader from '@/components/layout/MobileHeader';
 
@@ -22,10 +22,11 @@ export default function AppLayout() {
 
   // Define routes and their respective icons
   const routes = [
-    { name: 'dashboard', label: 'Dashboard', icon: Home },
+    { name: 'dashboard/index', label: 'Dashboard', icon: Home },
     { name: 'goals', label: 'Goals', icon: Target },
     { name: 'courses', label: 'Courses', icon: Blocks },
-    { name: 'partners', label: 'Partners', icon: Users },
+    { name: 'partners/index', label: 'Partners', icon: Users },
+    { name: 'more/index', label: 'More', icon: Menu },
   ];
 
   return (
@@ -59,72 +60,28 @@ export default function AppLayout() {
           <Tabs
             screenOptions={{
               headerShown: false,
-              tabBarStyle: styles.tabBar,
+              tabBarStyle: [styles.tabBar],
               tabBarActiveTintColor: '#3B82F6',
               tabBarInactiveTintColor: '#6B7280',
-              tabBarShowLabel: false,
+              tabBarShowLabel: true,
               tabBarItemStyle: styles.tabBarItem,
             }}
           >
-            <Tabs.Screen
-              name="dashboard/index"
-              options={{
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    <Home size={24} color={color} />
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }}
-            />
-            <Tabs.Screen
-              name="goals"
-              options={{
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    <Target size={24} color={color} />
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }}
-            />
-            <Tabs.Screen
-              name="courses"
-              options={{
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    <Blocks size={24} color={color} />
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }}
-            />
-            <Tabs.Screen
-              name="partners/index"
-              options={{
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    <Users size={24} color={color} />
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }}
-            />
-            <Tabs.Screen
-              name="more/index"
-              options={{
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    {isMoreOpen ? (
-                      <X size={24} color={color} />
-                    ) : (
-                      <Menu size={24} color={color} />
-                    )}
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }}
-            />
+            {routes.map((route) => (
+              <Tabs.Screen
+                key={route.name}
+                name={route.name}
+                options={{
+                  tabBarLabel: route.label,
+                  tabBarIcon: ({ color, focused }) => (
+                    <View style={styles.tabIconContainer}>
+                      <route.icon size={24} color={color} />
+                      {focused && <View style={styles.activeIndicator} />}
+                    </View>
+                  ),
+                }}
+              />
+            ))}
           </Tabs>
         </View>
       )}
@@ -151,13 +108,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
-    paddingVertical: 8,
-    ...(Platform.OS === 'web' && {
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-    }),
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   tabBarItem: {
     height: 48,
@@ -165,11 +117,11 @@ const styles = StyleSheet.create({
   tabIconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 48,
+    height: 28,
   },
   activeIndicator: {
     position: 'absolute',
-    bottom: -8,
+    bottom: -4,
     width: 4,
     height: 4,
     borderRadius: 2,
