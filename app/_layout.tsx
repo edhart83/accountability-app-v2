@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { View } from 'react-native';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useFonts } from 'expo-font';
 import { SplashScreen } from 'expo-router';
@@ -34,12 +35,12 @@ export default function RootLayout() {
 
   // Return null to keep splash screen visible while fonts load
   if (!fontsLoaded && !fontError) {
-    return null;
+    return <View />;
   }
 
   return (
     <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack>
         <Stack.Screen name="index" />
         <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
