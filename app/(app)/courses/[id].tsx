@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ArrowLeft, Clock, BookOpen, Star, Play, CheckCircle } from 'lucide-react-native';
+import { ArrowLeft, Clock, BookOpen, Star, Play, CircleCheck as CheckCircle } from 'lucide-react-native';
 import ProgressBar from '@/components/ui/ProgressBar';
 
 export default function CourseDetails() {
