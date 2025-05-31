@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Plus, Filter, Calendar, CircleCheck as CheckCircle, Circle as XCircle, Clock } from 'lucide-react-native';
 import GoalCard from '@/components/goals/GoalCard';
 
@@ -18,6 +18,7 @@ export default function Goals() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
   const router = useRouter();
+  const params = useLocalSearchParams();
   const [activeFilter, setActiveFilter] = useState('all');
   const [goals, setGoals] = useState<Goal[]>([
     {
@@ -63,17 +64,13 @@ export default function Goals() {
   ]);
 
   useEffect(() => {
-    const unsubscribe = router.addListener('setParams', ({ params }) => {
-      if (params?.newGoal) {
-        const goal = JSON.parse(params.newGoal as string);
-        setGoals(currentGoals => [goal, ...currentGoals]);
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+    if (params?.newGoal) {
+      const goal = JSON.parse(params.newGoal as string);
+      setGoals(currentGoals => [goal, ...currentGoals]);
+      // Clear the newGoal parameter to prevent re-adding on subsequent renders
+      router.setParams({ newGoal: undefined });
+    }
+  }, [params?.newGoal]);
 
   const filteredGoals = goals.filter(goal => {
     if (activeFilter === 'all') return true;
