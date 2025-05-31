@@ -61,7 +61,7 @@ export default function AppLayout() {
           }}
         >
           <Tabs.Screen
-            name="dashboard/index"
+            name="dashboard"
             options={{
               ...((!isDesktop) && {
                 tabBarIcon: ({ color, focused }) => (
@@ -100,7 +100,7 @@ export default function AppLayout() {
             }}
           />
           <Tabs.Screen
-            name="partners/index"
+            name="partners"
             options={{
               ...((!isDesktop) && {
                 tabBarIcon: ({ color, focused }) => (
@@ -113,7 +113,7 @@ export default function AppLayout() {
             }}
           />
           <Tabs.Screen
-            name="more/index"
+            name="more"
             options={{
               ...((!isDesktop) && {
                 tabBarIcon: ({ color, focused }) => (
