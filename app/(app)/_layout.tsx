@@ -22,11 +22,11 @@ export default function AppLayout() {
 
   // Define routes and their respective icons
   const routes = [
-    { name: 'dashboard/index', label: 'Dashboard', icon: Home },
+    { name: 'dashboard', label: 'Dashboard', icon: Home },
     { name: 'goals', label: 'Goals', icon: Target },
     { name: 'courses', label: 'Courses', icon: Blocks },
-    { name: 'partners/index', label: 'Partners', icon: Users },
-    { name: 'more/index', label: 'More', icon: Menu },
+    { name: 'partners', label: 'Partners', icon: Users },
+    { name: 'more', label: 'More', icon: Menu },
   ];
 
   return (
@@ -62,26 +62,71 @@ export default function AppLayout() {
               headerShown: false,
               tabBarStyle: [styles.tabBar],
               tabBarActiveTintColor: '#3B82F6',
-              tabBarInactiveTintColor: '#6B7280',
+              tabBarInactiveTintColor: '#9CA3AF',
               tabBarShowLabel: true,
               tabBarItemStyle: styles.tabBarItem,
             }}
           >
-            {routes.map((route) => (
-              <Tabs.Screen
-                key={route.name}
-                name={route.name}
-                options={{
-                  tabBarLabel: route.label,
-                  tabBarIcon: ({ color, focused }) => (
-                    <View style={styles.tabIconContainer}>
-                      <route.icon size={24} color={color} />
-                      {focused && <View style={styles.activeIndicator} />}
-                    </View>
-                  ),
-                }}
-              />
-            ))}
+            <Tabs.Screen
+              name="dashboard/index"
+              options={{
+                tabBarLabel: 'Dashboard',
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Home size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="goals"
+              options={{
+                tabBarLabel: 'Goals',
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Target size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="courses"
+              options={{
+                tabBarLabel: 'Courses',
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Blocks size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="partners/index"
+              options={{
+                tabBarLabel: 'Partners',
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Users size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="more/index"
+              options={{
+                tabBarLabel: 'More',
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Menu size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
           </Tabs>
         </View>
       )}
@@ -106,22 +151,24 @@ const styles = StyleSheet.create({
   tabBar: {
     height: 64,
     backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
+    borderTopWidth: 0.5,
     borderTopColor: '#E5E7EB',
     paddingTop: 8,
     paddingBottom: 8,
   },
   tabBarItem: {
     height: 48,
+    paddingTop: 0,
   },
   tabIconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 28,
+    height: 24,
+    marginBottom: 4,
   },
   activeIndicator: {
     position: 'absolute',
-    bottom: -4,
+    bottom: -12,
     width: 4,
     height: 4,
     borderRadius: 2,
