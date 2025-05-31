@@ -13,7 +13,7 @@ export default function Dashboard() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
   const isDesktop = width >= 1024;
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [partnerData, setPartnerData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,11 +25,11 @@ export default function Dashboard() {
     else if (hour < 18) setGreeting('Good afternoon');
     else setGreeting('Good evening');
 
-    if (user) {
+    if (isAuthenticated && user) {
       fetchDashboardData();
       fetchPartnerData();
     }
-  }, []);
+  }, [isAuthenticated, user]);
 
   const fetchDashboardData = async () => {
     try {
@@ -75,10 +75,10 @@ export default function Dashboard() {
 
   // Sample data
   const stats = [
-    { title: 'Streak', value: '7 days', icon: Calendar },
+    { title: 'Streak', value: `${dashboardData?.stats?.streak || 0} days`, icon: Calendar },
     { title: 'Goals', value: `${dashboardData?.active_goals_count || 0} active`, icon: Trophy },
-    { title: 'Points', value: dashboardData?.stats?.points || '0', icon: Star },
-    { title: 'Level', value: dashboardData?.stats?.level || '1', icon: Award },
+    { title: 'Points', value: `${dashboardData?.stats?.points || 0}`, icon: Star },
+    { title: 'Level', value: `${dashboardData?.stats?.level || 1}`, icon: Award },
   ];
 
   const renderStats = () => {
@@ -115,7 +115,7 @@ export default function Dashboard() {
               <View style={[
                 styles.progressIndicator,
                 { width: isDesktop ? 180 : 150, height: isDesktop ? 180 : 150 }
-              ]}>
+              ]} key={dashboardData?.overall_progress}>
                 <Text style={styles.progressPercentage}>
                   {Math.round((dashboardData?.overall_progress || 0) * 100)}%
                 </Text>

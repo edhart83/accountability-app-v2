@@ -21,7 +21,7 @@ const GoalSummary = () => {
     if (user) {
       fetchGoals();
     }
-  }, [user]);
+  }, [user?.id]);
 
   const fetchGoals = async () => {
     try {

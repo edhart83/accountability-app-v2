@@ -40,7 +40,7 @@ const RecentActivity = () => {
     if (user) {
       fetchActivities();
     }
-  }, [user]);
+  }, [user?.id]);
 
   const fetchActivities = async () => {
     try {
@@ -53,7 +53,7 @@ const RecentActivity = () => {
       if (error) throw error;
 
       if (dashboardData?.recent_activity) {
-        const formattedActivities = dashboardData.recent_activity.map((activity: any) => {
+        const formattedActivities = dashboardData.recent_activity.slice(0, 5).map((activity: any) => {
           const { icon, color, bgColor } = getActivityIcon(activity.type);
           return {
             ...activity,
