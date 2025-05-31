@@ -87,32 +87,6 @@ export default function AppLayout() {
             }}
           />
           <Tabs.Screen
-            name="courses"
-            options={{
-              ...((!isDesktop) && {
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    <Blocks size={24} color={color} />
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }),
-            }}
-          />
-          <Tabs.Screen
-            name="partners"
-            options={{
-              ...((!isDesktop) && {
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    <Users size={24} color={color} />
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }),
-            }}
-          />
-          <Tabs.Screen
             name="more"
             options={{
               ...((!isDesktop) && {
