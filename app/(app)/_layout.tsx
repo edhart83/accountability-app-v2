@@ -29,110 +29,104 @@ export default function AppLayout() {
     { name: 'partners', label: 'Partners', icon: Users },
   ];
 
-  if (isDesktop) {
-    return (
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-        <View style={styles.desktopLayout}>
-          <Sidebar 
-            routes={routes} 
-            activeRoute={pathname.split('/')[2] || 'dashboard'} 
-            onLogout={handleLogout}
-            isMoreOpen={isMoreOpen}
-            setIsMoreOpen={setIsMoreOpen}
-          />
-          <View style={styles.desktopContent}>
-            <Tabs screenOptions={{ 
-              headerShown: false,
-              tabBarStyle: { display: 'none' } // Hide tab bar on desktop
-            }}>
-              <Tabs.Screen name="dashboard" />
-              <Tabs.Screen name="goals" />
-              <Tabs.Screen name="courses" />
-              <Tabs.Screen name="partners" />
-              <Tabs.Screen name="more" />
-            </Tabs>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <MobileHeader 
-        routes={routes}
-        activeRoute={pathname.split('/')[2] || 'dashboard'}
-      />
-      <View style={styles.content}>
+      {isDesktop && (
+        <Sidebar 
+          routes={routes} 
+          activeRoute={pathname.split('/')[2] || 'dashboard'} 
+          onLogout={handleLogout}
+          isMoreOpen={isMoreOpen}
+          setIsMoreOpen={setIsMoreOpen}
+        />
+      )}
+      {!isDesktop && (
+        <MobileHeader 
+          routes={routes}
+          activeRoute={pathname.split('/')[2] || 'dashboard'}
+        />
+      )}
+      <View style={isDesktop ? styles.desktopContent : styles.content}>
         <Tabs
           screenOptions={{
             headerShown: false,
-            tabBarStyle: styles.tabBar,
-            tabBarActiveTintColor: '#3B82F6',
-            tabBarInactiveTintColor: '#6B7280',
-            tabBarShowLabel: false,
-            tabBarItemStyle: styles.tabBarItem,
+            tabBarStyle: isDesktop ? { display: 'none' } : styles.tabBar,
+            ...((!isDesktop) && {
+              tabBarActiveTintColor: '#3B82F6',
+              tabBarInactiveTintColor: '#6B7280',
+              tabBarShowLabel: false,
+              tabBarItemStyle: styles.tabBarItem,
+            }),
           }}
         >
           <Tabs.Screen
             name="dashboard"
             options={{
-              tabBarIcon: ({ color, focused }) => (
-                <View style={styles.tabIconContainer}>
-                  <Home size={24} color={color} />
-                  {focused && <View style={styles.activeIndicator} />}
-                </View>
-              ),
+              ...((!isDesktop) && {
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Home size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }),
             }}
           />
           <Tabs.Screen
             name="goals"
             options={{
-              tabBarIcon: ({ color, focused }) => (
-                <View style={styles.tabIconContainer}>
-                  <Target size={24} color={color} />
-                  {focused && <View style={styles.activeIndicator} />}
-                </View>
-              ),
+              ...((!isDesktop) && {
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Target size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }),
             }}
           />
           <Tabs.Screen
             name="courses"
             options={{
-              tabBarIcon: ({ color, focused }) => (
-                <View style={styles.tabIconContainer}>
-                  <Blocks size={24} color={color} />
-                  {focused && <View style={styles.activeIndicator} />}
-                </View>
-              ),
+              ...((!isDesktop) && {
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Blocks size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }),
             }}
           />
           <Tabs.Screen
             name="partners"
             options={{
-              tabBarIcon: ({ color, focused }) => (
-                <View style={styles.tabIconContainer}>
-                  <Users size={24} color={color} />
-                  {focused && <View style={styles.activeIndicator} />}
-                </View>
-              ),
+              ...((!isDesktop) && {
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Users size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }),
             }}
           />
           <Tabs.Screen
             name="more"
             options={{
-              tabBarIcon: ({ color, focused }) => (
-                <View style={styles.tabIconContainer}>
-                  {isMoreOpen ? (
-                    <X size={24} color={color} />
-                  ) : (
-                    <Menu size={24} color={color} />
-                  )}
-                  {focused && <View style={styles.activeIndicator} />}
-                </View>
-              ),
+              ...((!isDesktop) && {
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    {isMoreOpen ? (
+                      <X size={24} color={color} />
+                    ) : (
+                      <Menu size={24} color={color} />
+                    )}
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }),
             }}
           />
         </Tabs>
@@ -143,9 +137,6 @@ export default function AppLayout() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  desktopLayout: {
     flex: 1,
     flexDirection: 'row',
   },
