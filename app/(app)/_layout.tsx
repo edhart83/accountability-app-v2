@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { usePathname, useRouter } from 'expo-router';
+import { usePathname, useRouter, Tabs } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { Tabs, withLayoutContext } from 'expo-router';
 import { Chrome as Home, Target, Blocks, Users, Menu, X } from 'lucide-react-native';
 import Sidebar from '@/components/layout/Sidebar';
 import MobileHeader from '@/components/layout/MobileHeader';
-
-const TabsWithLayout = withLayoutContext(Tabs);
 
 export default function AppLayout() {
   const { width } = useWindowDimensions();
@@ -33,24 +30,24 @@ export default function AppLayout() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" />
-      {isDesktop && (
-        <Sidebar 
-          routes={routes} 
-          activeRoute={pathname.split('/')[2] || 'dashboard'} 
-          onLogout={handleLogout}
-          isMoreOpen={isMoreOpen}
-          setIsMoreOpen={setIsMoreOpen}
-        />
-      )}
-      {!isDesktop && (
-        <MobileHeader 
-          routes={routes}
-          activeRoute={pathname.split('/')[2] || 'dashboard'}
-        />
-      )}
-      <View style={isDesktop ? styles.desktopContent : styles.content}>
-        <TabsWithLayout
+      <View style={styles.layoutContainer}>
+        <StatusBar style="auto" />
+        {isDesktop ? (
+          <Sidebar 
+            routes={routes} 
+            activeRoute={pathname.split('/')[2] || 'dashboard'} 
+            onLogout={handleLogout}
+            isMoreOpen={isMoreOpen}
+            setIsMoreOpen={setIsMoreOpen}
+          />
+        ) : (
+          <MobileHeader 
+            routes={routes}
+            activeRoute={pathname.split('/')[2] || 'dashboard'}
+          />
+        )}
+        <View style={styles.mainContent}>
+          <Tabs
           screenOptions={{
             headerShown: false,
             tabBarStyle: isDesktop ? { display: 'none' } : styles.tabBar,
@@ -87,7 +84,8 @@ export default function AppLayout() {
               );
             },
           }}
-        />
+          />
+        </View>
       </View>
     </View>
   );
@@ -96,14 +94,14 @@ export default function AppLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  layoutContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  mainContent: {
+    flex: 1,
     flexDirection: 'column',
-  },
-  desktopContent: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    width: '100%',
   },
   tabBar: {
     height: 64,
