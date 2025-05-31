@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
-import { Search, Calendar, MessageCircle } from 'lucide-react-native';
+import { Search, Calendar, MessageCircle, UserPlus } from 'lucide-react-native';
 import TextInput from '@/components/ui/TextInput';
 
 export default function Partners() {
@@ -109,14 +109,14 @@ export default function Partners() {
       <ScrollView style={styles.content}>
         {activeTab === 'myPartners' ? (
           <>
-            <Text style={styles.sectionTitle}>Your Partners</Text>
-            {partners.map(partner => (
-              <TouchableOpacity 
-                key={partner.id} 
-                style={styles.partnerCard}
-                onPress={() => router.push(`/partners/${partner.id}`)}
-              >
-                <View style={styles.partnerInfo}>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Your Partners</Text>
+              {partners.map(partner => (
+                <TouchableOpacity 
+                  key={partner.id} 
+                  style={styles.partnerCard}
+                  onPress={() => router.push(`/partners/${partner.id}`)}
+                >
                   <Image source={{ uri: partner.image }} style={styles.partnerImage} />
                   <View style={styles.partnerDetails}>
                     <Text style={styles.partnerName}>{partner.name}</Text>
@@ -127,41 +127,30 @@ export default function Partners() {
                         </View>
                       ))}
                     </View>
-                    <View style={styles.meetingInfo}>
-                      <Calendar size={14} color="#6B7280" style={styles.meetingIcon} />
-                      <Text style={styles.meetingText}>Next meeting: {partner.nextMeeting}</Text>
-                    </View>
                   </View>
-                </View>
-                <View style={styles.actions}>
-                  <TouchableOpacity style={styles.messageButton}>
-                    <MessageCircle size={20} color="#FFFFFF" />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.scheduleButton}>
-                    <Calendar size={16} color="#3B82F6" style={styles.scheduleIcon} />
-                    <Text style={styles.scheduleText}>Schedule</Text>
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            ))}
+                  <View style={styles.nextMeeting}>
+                    <Calendar size={14} color="#4B5563" />
+                    <Text style={styles.nextMeetingText}>{partner.nextMeeting}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
 
             {requests.length > 0 && (
-              <>
-                <Text style={[styles.sectionTitle, styles.requestsTitle]}>Partner Requests</Text>
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Partner Requests</Text>
                 {requests.map(request => (
                   <View key={request.id} style={styles.requestCard}>
-                    <View style={styles.requestInfo}>
-                      <Image source={{ uri: request.image }} style={styles.partnerImage} />
-                      <View style={styles.requestDetails}>
-                        <Text style={styles.partnerName}>{request.name}</Text>
-                        <Text style={styles.requestDate}>Requested {request.requestDate}</Text>
-                        <View style={styles.goalTags}>
-                          {request.goals.map((goal, idx) => (
-                            <View key={idx} style={styles.goalTag}>
-                              <Text style={styles.goalTagText}>{goal}</Text>
-                            </View>
-                          ))}
-                        </View>
+                    <Image source={{ uri: request.image }} style={styles.partnerImage} />
+                    <View style={styles.requestDetails}>
+                      <Text style={styles.partnerName}>{request.name}</Text>
+                      <Text style={styles.requestDate}>Requested {request.requestDate}</Text>
+                      <View style={styles.goalTags}>
+                        {request.goals.map((goal, idx) => (
+                          <View key={idx} style={styles.goalTag}>
+                            <Text style={styles.goalTagText}>{goal}</Text>
+                          </View>
+                        ))}
                       </View>
                     </View>
                     <View style={styles.requestActions}>
@@ -174,43 +163,38 @@ export default function Partners() {
                     </View>
                   </View>
                 ))}
-              </>
+              </View>
             )}
           </>
         ) : (
-          <>
+          <View style={styles.section}>
             <Text style={styles.sectionTitle}>Suggested Partners</Text>
             <Text style={styles.sectionDescription}>
               Based on your goals and interests, we've found people who might be great accountability partners for you.
             </Text>
-            {suggestions.map(partner => (
-          <TouchableOpacity 
-            key={partner.id} 
-            style={styles.partnerCard}
-            onPress={() => router.push(`/partners/${partner.id}`)}
-          >
-            <View style={styles.partnerInfo}>
-              <Image source={{ uri: partner.image }} style={styles.partnerImage} />
-              <View style={styles.partnerDetails}>
-                <Text style={styles.partnerName}>{partner.name}</Text>
-                <Text style={styles.compatibilityText}>{partner.compatibility}</Text>
-                <View style={styles.goalTags}>
-                  {partner.goals.map((goal, idx) => (
-                    <View key={idx} style={styles.goalTag}>
-                      <Text style={styles.goalTagText}>{goal}</Text>
-                    </View>
-                  ))}
+            {partners.map(partner => (
+              <TouchableOpacity 
+                key={partner.id} 
+                style={styles.partnerCard}
+                onPress={() => router.push(`/partners/${partner.id}`)}
+              >
+                <Image source={{ uri: partner.image }} style={styles.partnerImage} />
+                <View style={styles.partnerDetails}>
+                  <Text style={styles.partnerName}>{partner.name}</Text>
+                  <View style={styles.goalTags}>
+                    {partner.goals.map((goal, idx) => (
+                      <View key={idx} style={styles.goalTag}>
+                        <Text style={styles.goalTagText}>{goal}</Text>
+                      </View>
+                    ))}
+                  </View>
                 </View>
-              </View>
-            </View>
-            <View style={styles.actions}>
-              <TouchableOpacity style={styles.connectButton}>
-                <Text style={styles.connectButtonText}>Connect</Text>
+                <TouchableOpacity style={styles.connectButton}>
+                  <UserPlus size={20} color="#FFFFFF" />
+                </TouchableOpacity>
               </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        ))}
-          </>
+            ))}
+          </View>
         )}
       </ScrollView>
     </View>
@@ -257,13 +241,15 @@ const styles = StyleSheet.create({
   tabText: {
     fontFamily: 'Inter-Medium',
     fontSize: 16,
-    color: '#6B7280',
+    color: '#4B5563',
   },
   activeTabText: {
     color: '#3B82F6',
   },
   content: {
     flex: 1,
+  },
+  section: {
     padding: 16,
   },
   sectionTitle: {
@@ -272,7 +258,7 @@ const styles = StyleSheet.create({
     color: '#1F2937',
     marginBottom: 16,
   },
-  requestsTitle: {
+  requestsSection: {
     marginTop: 24,
   },
   sectionDescription: {
@@ -285,7 +271,7 @@ const styles = StyleSheet.create({
   partnerCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -293,18 +279,28 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
-  partnerInfo: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
   partnerImage: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    marginRight: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
   },
   partnerDetails: {
     flex: 1,
+    marginRight: 12,
+  },
+  nextMeeting: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+  },
+  nextMeetingText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 12,
+    color: '#4B5563',
+    marginLeft: 4,
   },
   partnerName: {
     fontFamily: 'Inter-SemiBold',
@@ -312,16 +308,9 @@ const styles = StyleSheet.create({
     color: '#1F2937',
     marginBottom: 4,
   },
-  compatibilityText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#3B82F6',
-    marginBottom: 8,
-  },
   goalTags: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 8,
   },
   goalTag: {
     backgroundColor: '#F3F4F6',
@@ -336,79 +325,41 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#4B5563',
   },
-  meetingInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  meetingIcon: {
-    marginRight: 6,
-  },
-  meetingText: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-    paddingTop: 12,
-  },
-  messageButton: {
+  connectButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#3B82F6',
-    width: 36,
-    height: 36,
-    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
-  },
-  scheduleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#EBF5FF',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 18,
-  },
-  scheduleIcon: {
-    marginRight: 6,
-  },
-  scheduleText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#3B82F6',
   },
   requestCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
-  },
-  requestInfo: {
     flexDirection: 'row',
-    marginBottom: 16,
+    alignItems: 'flex-start',
   },
   requestDetails: {
     flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
   },
   requestDate: {
     fontFamily: 'Inter-Regular',
     fontSize: 14,
-    color: '#6B7280',
+    color: '#4B5563',
     marginBottom: 8,
   },
   requestActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 12,
+    flexDirection: 'column',
+    gap: 8,
   },
   declineButton: {
     backgroundColor: '#FEE2E2',
@@ -428,18 +379,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   acceptText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#FFFFFF',
-  },
-  connectButton: {
-    backgroundColor: '#3B82F6',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignSelf: 'flex-end',
-  },
-  connectButtonText: {
     fontFamily: 'Inter-Medium',
     fontSize: 14,
     color: '#FFFFFF',
