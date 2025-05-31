@@ -8,6 +8,31 @@ export default function Partners() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('myPartners');
 
+  // Sample suggested partners data
+  const suggestions = [
+    {
+      id: '1',
+      name: 'James Smith',
+      goals: ['Running', 'Reading'],
+      image: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg',
+      compatibility: '85% match',
+    },
+    {
+      id: '2',
+      name: 'Emma Garcia',
+      goals: ['Yoga', 'Programming'],
+      image: 'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg',
+      compatibility: '78% match',
+    },
+    {
+      id: '3',
+      name: 'Robert Johnson',
+      goals: ['Cycling', 'Language Learning'],
+      image: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg',
+      compatibility: '72% match',
+    },
+  ];
+
   // Sample data
   const partners = [
     {
@@ -80,13 +105,85 @@ export default function Partners() {
       </View>
       
       <ScrollView style={styles.content}>
-        <Text style={styles.sectionTitle}>Your Partners</Text>
-        {partners.map(partner => (
+        {activeTab === 'myPartners' ? (
+          <>
+            <Text style={styles.sectionTitle}>Your Partners</Text>
+            {partners.map(partner => (
+              <View key={partner.id} style={styles.partnerCard}>
+                <View style={styles.partnerInfo}>
+                  <Image source={{ uri: partner.image }} style={styles.partnerImage} />
+                  <View style={styles.partnerDetails}>
+                    <Text style={styles.partnerName}>{partner.name}</Text>
+                    <View style={styles.goalTags}>
+                      {partner.goals.map((goal, idx) => (
+                        <View key={idx} style={styles.goalTag}>
+                          <Text style={styles.goalTagText}>{goal}</Text>
+                        </View>
+                      ))}
+                    </View>
+                    <View style={styles.meetingInfo}>
+                      <Calendar size={14} color="#6B7280" style={styles.meetingIcon} />
+                      <Text style={styles.meetingText}>Next meeting: {partner.nextMeeting}</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.actions}>
+                  <TouchableOpacity style={styles.messageButton}>
+                    <MessageCircle size={20} color="#FFFFFF" />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.scheduleButton}>
+                    <Calendar size={16} color="#3B82F6" style={styles.scheduleIcon} />
+                    <Text style={styles.scheduleText}>Schedule</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+
+            {requests.length > 0 && (
+              <>
+                <Text style={[styles.sectionTitle, styles.requestsTitle]}>Partner Requests</Text>
+                {requests.map(request => (
+                  <View key={request.id} style={styles.requestCard}>
+                    <View style={styles.requestInfo}>
+                      <Image source={{ uri: request.image }} style={styles.partnerImage} />
+                      <View style={styles.requestDetails}>
+                        <Text style={styles.partnerName}>{request.name}</Text>
+                        <Text style={styles.requestDate}>Requested {request.requestDate}</Text>
+                        <View style={styles.goalTags}>
+                          {request.goals.map((goal, idx) => (
+                            <View key={idx} style={styles.goalTag}>
+                              <Text style={styles.goalTagText}>{goal}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      </View>
+                    </View>
+                    <View style={styles.requestActions}>
+                      <TouchableOpacity style={styles.declineButton}>
+                        <Text style={styles.declineText}>Decline</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.acceptButton}>
+                        <Text style={styles.acceptText}>Accept</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <Text style={styles.sectionTitle}>Suggested Partners</Text>
+            <Text style={styles.sectionDescription}>
+              Based on your goals and interests, we've found people who might be great accountability partners for you.
+            </Text>
+            {suggestions.map(partner => (
           <View key={partner.id} style={styles.partnerCard}>
             <View style={styles.partnerInfo}>
               <Image source={{ uri: partner.image }} style={styles.partnerImage} />
               <View style={styles.partnerDetails}>
                 <Text style={styles.partnerName}>{partner.name}</Text>
+                <Text style={styles.compatibilityText}>{partner.compatibility}</Text>
                 <View style={styles.goalTags}>
                   {partner.goals.map((goal, idx) => (
                     <View key={idx} style={styles.goalTag}>
@@ -94,53 +191,15 @@ export default function Partners() {
                     </View>
                   ))}
                 </View>
-                <View style={styles.meetingInfo}>
-                  <Calendar size={14} color="#6B7280" style={styles.meetingIcon} />
-                  <Text style={styles.meetingText}>Next meeting: {partner.nextMeeting}</Text>
-                </View>
               </View>
             </View>
             <View style={styles.actions}>
-              <TouchableOpacity style={styles.messageButton}>
-                <MessageCircle size={20} color="#FFFFFF" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.scheduleButton}>
-                <Calendar size={16} color="#3B82F6" style={styles.scheduleIcon} />
-                <Text style={styles.scheduleText}>Schedule</Text>
+              <TouchableOpacity style={styles.connectButton}>
+                <Text style={styles.connectButtonText}>Connect</Text>
               </TouchableOpacity>
             </View>
           </View>
         ))}
-
-        {requests.length > 0 && (
-          <>
-            <Text style={[styles.sectionTitle, styles.requestsTitle]}>Partner Requests</Text>
-            {requests.map(request => (
-              <View key={request.id} style={styles.requestCard}>
-                <View style={styles.requestInfo}>
-                  <Image source={{ uri: request.image }} style={styles.partnerImage} />
-                  <View style={styles.requestDetails}>
-                    <Text style={styles.partnerName}>{request.name}</Text>
-                    <Text style={styles.requestDate}>Requested {request.requestDate}</Text>
-                    <View style={styles.goalTags}>
-                      {request.goals.map((goal, idx) => (
-                        <View key={idx} style={styles.goalTag}>
-                          <Text style={styles.goalTagText}>{goal}</Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.requestActions}>
-                  <TouchableOpacity style={styles.declineButton}>
-                    <Text style={styles.declineText}>Decline</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.acceptButton}>
-                    <Text style={styles.acceptText}>Accept</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))}
           </>
         )}
       </ScrollView>
@@ -206,6 +265,13 @@ const styles = StyleSheet.create({
   requestsTitle: {
     marginTop: 24,
   },
+  sectionDescription: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 16,
+    color: '#6B7280',
+    marginBottom: 24,
+    lineHeight: 24,
+  },
   partnerCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
@@ -235,6 +301,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1F2937',
     marginBottom: 4,
+  },
+  compatibilityText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 14,
+    color: '#3B82F6',
+    marginBottom: 8,
   },
   goalTags: {
     flexDirection: 'row',
@@ -346,6 +418,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   acceptText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
+  },
+  connectButton: {
+    backgroundColor: '#3B82F6',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignSelf: 'flex-end',
+  },
+  connectButtonText: {
     fontFamily: 'Inter-Medium',
     fontSize: 14,
     color: '#FFFFFF',
