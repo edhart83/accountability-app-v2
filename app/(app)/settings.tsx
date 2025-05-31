@@ -134,7 +134,6 @@ export default function Settings() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
@@ -178,21 +177,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
   },
   backButton: {
-    padding: 8,
+    padding: 4,
   },
   title: {
     fontFamily: 'Inter-Bold',
-    fontSize: 20,
+    fontSize: 18,
     color: '#1F2937',
   },
   placeholder: {
-    width: 40,
+    width: 24,
   },
   scrollView: {
     flex: 1,
