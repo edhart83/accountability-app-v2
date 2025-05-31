@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LogOut, Menu, X } from 'lucide-react-native';
+import { useAuth } from '@/context/AuthContext';
 
 interface RouteItem {
   name: string;
@@ -19,6 +20,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ routes, activeRoute, onLogout, isMoreOpen, setIsMoreOpen }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   return (
     <View style={styles.sidebar}>
@@ -80,12 +82,12 @@ const Sidebar: React.FC<SidebarProps> = ({ routes, activeRoute, onLogout, isMore
       <View style={styles.footer}>
         <View style={styles.userInfo}>
           <Image
-            source={{ uri: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg' }}
+            source={{ uri: user?.image_url || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg' }}
             style={styles.userAvatar}
           />
           <View style={styles.userTextContainer}>
             <Text style={styles.userName}>{user?.name || 'User'}</Text>
-            <Text style={styles.userEmail}>{user?.email}</Text>
+            <Text style={styles.userEmail}>{user?.email || ''}</Text>
           </View>
         </View>
 
