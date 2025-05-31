@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           supabase
             .from('profiles')
             .select('*')
-            .eq('id', session.user.id)
+            .eq('user_id', session.user.id)
             .single()
             .then(({ data: profile }) => {
               if (profile) {
