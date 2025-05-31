@@ -101,10 +101,7 @@ export default function Dashboard() {
           </View>
         </View>
 
-        <TouchableOpacity 
-          style={styles.partnerSection}
-          onPress={() => router.push('/partners/1')}
-        >
+        <View style={styles.partnerSection}>
           <Text style={styles.sectionTitle}>Accountability Partner</Text>
           <TouchableOpacity style={styles.partnerCard}>
             <Image 
@@ -120,7 +117,7 @@ export default function Dashboard() {
               <Text style={styles.nextMeetingText}>24h</Text>
             </View>
           </TouchableOpacity>
-        </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );
