@@ -1,56 +1,75 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { supabase } from '@/utils/supabase';
+import { useAuth } from '@/context/AuthContext';
 import { Check, Target, Medal, Clock, User } from 'lucide-react-native';
 
+interface Activity {
+  id: string;
+  type: string;
+  title: string;
+  time: string;
+  icon: any;
+  iconColor: string;
+  iconBgColor: string;
+}
+
 const RecentActivity = () => {
-  // Sample data
-  const activities = [
-    {
-      id: '1',
-      type: 'goal_completed',
-      title: 'Completed "Morning Meditation" goal',
-      time: '2 hours ago',
-      icon: Check,
-      iconColor: '#10B981',
-      iconBgColor: '#D1FAE5',
-    },
-    {
-      id: '2',
-      type: 'goal_created',
-      title: 'Created a new goal "Learn Spanish"',
-      time: '5 hours ago',
-      icon: Target,
-      iconColor: '#3B82F6',
-      iconBgColor: '#DBEAFE',
-    },
-    {
-      id: '3',
-      type: 'achievement',
-      title: 'Earned "7-Day Streak" badge',
-      time: 'Yesterday',
-      icon: Medal,
-      iconColor: '#F59E0B',
-      iconBgColor: '#FEF3C7',
-    },
-    {
-      id: '4',
-      type: 'session_completed',
-      title: 'Completed "Time Management" course',
-      time: '2 days ago',
-      icon: Clock,
-      iconColor: '#8B5CF6',
-      iconBgColor: '#EDE9FE',
-    },
-    {
-      id: '5',
-      type: 'partner_match',
-      title: 'Matched with David as accountability partner',
-      time: '3 days ago',
-      icon: User,
-      iconColor: '#EC4899',
-      iconBgColor: '#FCE7F3',
-    },
-  ];
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'goal_completed':
+        return { icon: Check, color: '#10B981', bgColor: '#D1FAE5' };
+      case 'goal_created':
+        return { icon: Target, color: '#3B82F6', bgColor: '#DBEAFE' };
+      case 'achievement':
+        return { icon: Medal, color: '#F59E0B', bgColor: '#FEF3C7' };
+      case 'session_completed':
+        return { icon: Clock, color: '#8B5CF6', bgColor: '#EDE9FE' };
+      case 'partner_match':
+        return { icon: User, color: '#EC4899', bgColor: '#FCE7F3' };
+      default:
+        return { icon: Clock, color: '#6B7280', bgColor: '#F3F4F6' };
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchActivities();
+    }
+  }, [user]);
+
+  const fetchActivities = async () => {
+    try {
+      const { data: dashboardData, error } = await supabase
+        .from('dashboard_data')
+        .select('recent_activity')
+        .eq('id', user?.id)
+        .single();
+
+      if (error) throw error;
+
+      if (dashboardData?.recent_activity) {
+        const formattedActivities = dashboardData.recent_activity.map((activity: any) => {
+          const { icon, color, bgColor } = getActivityIcon(activity.type);
+          return {
+            ...activity,
+            icon,
+            iconColor: color,
+            iconBgColor: bgColor,
+          };
+        });
+        setActivities(formattedActivities);
+      }
+    } catch (error) {
+      console.error('Error fetching activities:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>

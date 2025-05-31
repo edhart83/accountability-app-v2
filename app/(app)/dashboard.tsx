@@ -14,7 +14,8 @@ export default function Dashboard() {
   const isTablet = width >= 768;
   const isDesktop = width >= 1024;
   const { user } = useAuth();
-  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [partnerData, setPartnerData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [greeting, setGreeting] = useState('');
 
@@ -26,6 +27,7 @@ export default function Dashboard() {
 
     if (user) {
       fetchDashboardData();
+      fetchPartnerData();
     }
   }, []);
 
@@ -43,6 +45,31 @@ export default function Dashboard() {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchPartnerData = async () => {
+    try {
+      const { data: partnership, error: partnershipError } = await supabase
+        .from('partnerships')
+        .select(`
+          id,
+          partner:partner_id (
+            id,
+            name,
+            image_url
+          ),
+          next_meeting
+        `)
+        .eq('user_id', user?.id)
+        .eq('status', 'active')
+        .single();
+
+      if (!partnershipError && partnership) {
+        setPartnerData(partnership);
+      }
+    } catch (error) {
+      console.error('Error fetching partner data:', error);
     }
   };
 
@@ -89,7 +116,9 @@ export default function Dashboard() {
                 styles.progressIndicator,
                 { width: isDesktop ? 180 : 150, height: isDesktop ? 180 : 150 }
               ]}>
-                <Text style={styles.progressPercentage}>72%</Text>
+                <Text style={styles.progressPercentage}>
+                  {Math.round((dashboardData?.overall_progress || 0) * 100)}%
+                </Text>
                 <Text style={styles.progressLabel}>Complete</Text>
               </View>
             </View>
@@ -129,23 +158,39 @@ export default function Dashboard() {
 
         <View style={styles.partnerSection}>
           <Text style={styles.sectionTitle}>Accountability Partner</Text>
-          <TouchableOpacity 
-            style={styles.partnerCard}
-            onPress={() => router.push('/partners/1')}
-          >
-            <Image 
-              source={{ uri: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg" }} 
-              style={styles.partnerImage} 
-            />
-            <View style={styles.partnerInfo}>
-              <Text style={styles.partnerName}>David Wilson</Text>
-              <Text style={styles.partnerStatus}>Next meeting: Tomorrow, 3:00 PM</Text>
+          {partnerData ? (
+            <TouchableOpacity 
+              style={styles.partnerCard}
+              onPress={() => router.push(`/partners/${partnerData.partner.id}`)}
+            >
+              <Image 
+                source={{ uri: partnerData.partner.image_url || "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg" }} 
+                style={styles.partnerImage} 
+              />
+              <View style={styles.partnerInfo}>
+                <Text style={styles.partnerName}>{partnerData.partner.name}</Text>
+                <Text style={styles.partnerStatus}>
+                  Next meeting: {new Date(partnerData.next_meeting).toLocaleDateString()}
+                </Text>
+              </View>
+              <View style={styles.nextMeetingIndicator}>
+                <Calendar size={14} color="#4B5563" style={styles.clockIcon} />
+                <Text style={styles.nextMeetingText}>
+                  {Math.ceil((new Date(partnerData.next_meeting).getTime() - Date.now()) / (1000 * 60 * 60))}h
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.emptyPartner}>
+              <Text style={styles.emptyPartnerText}>No partner assigned yet</Text>
+              <TouchableOpacity
+                style={styles.findPartnerButton}
+                onPress={() => router.push('/partners')}
+              >
+                <Text style={styles.findPartnerButtonText}>Find a Partner</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.nextMeetingIndicator}>
-              <Calendar size={14} color="#4B5563" style={styles.clockIcon} />
-              <Text style={styles.nextMeetingText}>24h</Text>
-            </View>
-          </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -370,5 +415,28 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Medium',
     fontSize: 12,
     color: '#4B5563',
+  },
+  emptyPartner: {
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
+  },
+  emptyPartnerText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 16,
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  findPartnerButton: {
+    backgroundColor: '#3B82F6',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  findPartnerButtonText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
   },
 });

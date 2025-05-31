@@ -1,30 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Calendar } from 'lucide-react-native';
+import { supabase } from '@/utils/supabase';
+import { useAuth } from '@/context/AuthContext';
 import ProgressBar from '@/components/ui/ProgressBar';
 
+interface Goal {
+  id: string;
+  title: string;
+  due_date: string;
+  progress: number;
+}
+
 const GoalSummary = () => {
-  // Sample data
-  const goals = [
-    {
-      id: '1',
-      title: 'Complete React Native Course',
-      dueDate: '2025-05-15',
-      progress: 0.65,
-    },
-    {
-      id: '2',
-      title: 'Run 5km Three Times a Week',
-      dueDate: '2025-05-30',
-      progress: 0.33,
-    },
-    {
-      id: '3',
-      title: 'Read 10 Books This Year',
-      dueDate: '2025-12-31',
-      progress: 0.2,
-    },
-  ];
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      fetchGoals();
+    }
+  }, [user]);
+
+  const fetchGoals = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('goals')
+        .select('id, title, due_date, progress')
+        .eq('user_id', user?.id)
+        .eq('status', 'in-progress')
+        .order('due_date', { ascending: true })
+        .limit(3);
+
+      if (error) throw error;
+      setGoals(data || []);
+    } catch (error) {
+      console.error('Error fetching goals:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -53,7 +69,7 @@ const GoalSummary = () => {
             <Text style={styles.goalTitle} numberOfLines={1}>{goal.title}</Text>
             <View style={styles.dueDateContainer}>
               <Calendar size={12} color="#6B7280" style={styles.dueDateIcon} />
-              <Text style={styles.dueDate}>{formatDate(goal.dueDate)}</Text>
+              <Text style={styles.dueDate}>{formatDate(goal.due_date)}</Text>
             </View>
           </View>
           
