@@ -96,13 +96,14 @@ export default function AppLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   desktopContent: {
     flex: 1,
   },
   content: {
     flex: 1,
+    width: '100%',
   },
   tabBar: {
     height: 64,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
   tabIconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
+    height: 48,
   },
   activeIndicator: {
     position: 'absolute',
