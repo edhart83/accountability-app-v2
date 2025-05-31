@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 import { Search, Calendar, MessageCircle } from 'lucide-react-native';
 import TextInput from '@/components/ui/TextInput';
 
 export default function Partners() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('myPartners');
 
@@ -109,7 +111,11 @@ export default function Partners() {
           <>
             <Text style={styles.sectionTitle}>Your Partners</Text>
             {partners.map(partner => (
-              <View key={partner.id} style={styles.partnerCard}>
+              <TouchableOpacity 
+                key={partner.id} 
+                style={styles.partnerCard}
+                onPress={() => router.push(`/partners/${partner.id}`)}
+              >
                 <View style={styles.partnerInfo}>
                   <Image source={{ uri: partner.image }} style={styles.partnerImage} />
                   <View style={styles.partnerDetails}>
@@ -136,7 +142,7 @@ export default function Partners() {
                     <Text style={styles.scheduleText}>Schedule</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
 
             {requests.length > 0 && (
@@ -178,7 +184,11 @@ export default function Partners() {
               Based on your goals and interests, we've found people who might be great accountability partners for you.
             </Text>
             {suggestions.map(partner => (
-          <View key={partner.id} style={styles.partnerCard}>
+          <TouchableOpacity 
+            key={partner.id} 
+            style={styles.partnerCard}
+            onPress={() => router.push(`/partners/${partner.id}`)}
+          >
             <View style={styles.partnerInfo}>
               <Image source={{ uri: partner.image }} style={styles.partnerImage} />
               <View style={styles.partnerDetails}>
@@ -198,7 +208,7 @@ export default function Partners() {
                 <Text style={styles.connectButtonText}>Connect</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
           </>
         )}
