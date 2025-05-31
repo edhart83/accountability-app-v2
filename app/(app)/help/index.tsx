@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { Search, ChevronRight, MessageCircle, Book, HelpCircle, Mail } from 'lucide-react-native';
+import { Search, ChevronRight, MessageCircle, Book, CircleHelp as HelpCircle, Mail } from 'lucide-react-native';
 
 export default function Help() {
   const [searchQuery, setSearchQuery] = useState('');
