@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { ChevronRight, Award, Star, Trophy, Calendar } from 'lucide-react-native';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import GoalSummary from '@/components/dashboard/GoalSummary';
 
 export default function Dashboard() {
+  const router = useRouter();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
   const isDesktop = width >= 1024;
