@@ -103,7 +103,10 @@ export default function Dashboard() {
 
         <View style={styles.partnerSection}>
           <Text style={styles.sectionTitle}>Accountability Partner</Text>
-          <TouchableOpacity style={styles.partnerCard}>
+          <TouchableOpacity 
+            style={styles.partnerCard}
+            onPress={() => router.push('/partners/1')}
+          >
             <Image 
               source={{ uri: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg" }} 
               style={styles.partnerImage} 
