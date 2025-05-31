@@ -3,7 +3,7 @@ import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { usePathname, useRouter, Tabs } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { Home, Target, Blocks, Users, Menu } from 'lucide-react-native';
+import { Chrome as Home, Target, Blocks, Users, Menu } from 'lucide-react-native';
 import Sidebar from '@/components/layout/Sidebar';
 import MobileHeader from '@/components/layout/MobileHeader';
 
