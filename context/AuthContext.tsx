@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', authUser.id)
+          .eq('user_id', authUser.id)
           .single();
 
         if (profileError) throw profileError;
