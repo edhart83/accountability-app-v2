@@ -6,13 +6,12 @@ const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  console.log("Supabase URL:", supabaseUrl);
+console.log("Supabase Key:", supabaseAnonKey);
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
   },
-  console.log("Supabase URL:", supabaseUrl);
-console.log("Supabase Key:", supabaseAnonKey);
-
 });
