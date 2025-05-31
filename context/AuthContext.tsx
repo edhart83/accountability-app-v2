@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const authListener = supabase.auth.onAuthStateChange(
       (_event, session) => {
         if (session) {
           // Set basic user info immediately
@@ -69,8 +69,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     ).subscription;
 
+    const subscription = authListener.data?.subscription;
+
     return () => {
-      subscription?.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, []);
 
