@@ -7,7 +7,6 @@ import { ArrowLeft, Eye, EyeOff } from 'lucide-react-native';
 
 export default function Register() {
   const [name, setName] = useState('');
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,7 +18,7 @@ export default function Register() {
   const { register } = useAuth();
 
   const handleRegister = async () => {
-    if (!name || !username || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
       return;
     }
@@ -33,7 +32,7 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      await register(name, username, email, password);
+      await register(name, email, password);
       router.replace('/dashboard');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
@@ -75,18 +74,6 @@ export default function Register() {
                 placeholderTextColor="#94A3B8"
                 value={name}
                 onChangeText={setName}
-              />
-            </View>
-            
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Username</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Choose a username"
-                placeholderTextColor="#94A3B8"
-                value={username}
-                onChangeText={setUsername}
-                autoCapitalize="none"
               />
             </View>
             
