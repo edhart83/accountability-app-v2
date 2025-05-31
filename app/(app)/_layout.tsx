@@ -100,7 +100,7 @@ export default function AppLayout() {
             }}
           />
           <Tabs.Screen
-            name="partners"
+            name="partners/index"
             options={{
               ...((!isDesktop) && {
                 tabBarIcon: ({ color, focused }) => (
