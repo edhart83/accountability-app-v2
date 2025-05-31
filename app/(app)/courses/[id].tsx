@@ -2,62 +2,186 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'rea
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ArrowLeft, Clock, BookOpen, Star, Play, CircleCheck as CheckCircle } from 'lucide-react-native';
 import ProgressBar from '@/components/ui/ProgressBar';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 export default function CourseDetails() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
 
-  // In a real app, this would fetch from an API or database
-  const course = {
-    id: '1',
-    title: 'Building Effective Accountability Systems',
-    category: 'productivity',
-    image: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg',
-    lessons: 8,
-    duration: '2h 45m',
-    rating: 4.8,
-    progress: 0.25,
-    description: 'Learn how to build and maintain effective accountability systems that drive results and foster personal growth. This comprehensive course covers everything from setting up tracking mechanisms to maintaining long-term motivation.',
-    instructor: {
-      name: 'Dr. Sarah Johnson',
-      title: 'Productivity Expert',
-      image: 'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg'
+  // Sample courses data
+  const coursesData = {
+    '1': {
+      id: '1',
+      title: 'Building Effective Accountability Systems',
+      category: 'productivity',
+      image: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg',
+      lessons: 8,
+      duration: '2h 45m',
+      rating: 4.8,
+      progress: 0.25,
+      description: 'Learn how to build and maintain effective accountability systems that drive results and foster personal growth. This comprehensive course covers everything from setting up tracking mechanisms to maintaining long-term motivation.',
+      instructor: {
+        name: 'Dr. Sarah Johnson',
+        title: 'Productivity Expert',
+        image: 'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg'
+      },
+      syllabus: [
+        {
+          id: '1',
+          title: 'Introduction to Accountability',
+          duration: '20m',
+          completed: true,
+          lessons: [
+            { id: '1.1', title: 'Why Accountability Matters', duration: '8m', completed: true },
+            { id: '1.2', title: 'Key Components of Effective Systems', duration: '12m', completed: true }
+          ]
+        },
+        {
+          id: '2',
+          title: 'Setting Up Your System',
+          duration: '45m',
+          completed: false,
+          lessons: [
+            { id: '2.1', title: 'Choosing the Right Tools', duration: '15m', completed: true },
+            { id: '2.2', title: 'Creating Tracking Mechanisms', duration: '15m', completed: false },
+            { id: '2.3', title: 'Setting Up Review Cycles', duration: '15m', completed: false }
+          ]
+        },
+        {
+          id: '3',
+          title: 'Maintaining Momentum',
+          duration: '35m',
+          completed: false,
+          lessons: [
+            { id: '3.1', title: 'Dealing with Setbacks', duration: '12m', completed: false },
+            { id: '3.2', title: 'Adjusting Your System', duration: '13m', completed: false },
+            { id: '3.3', title: 'Long-term Sustainability', duration: '10m', completed: false }
+          ]
+        }
+      ]
     },
-    syllabus: [
-      {
-        id: '1',
-        title: 'Introduction to Accountability',
-        duration: '20m',
-        completed: true,
-        lessons: [
-          { id: '1.1', title: 'Why Accountability Matters', duration: '8m', completed: true },
-          { id: '1.2', title: 'Key Components of Effective Systems', duration: '12m', completed: true }
-        ]
+    '2': {
+      id: '2',
+      title: 'Goal Setting for Success',
+      category: 'productivity',
+      image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg',
+      lessons: 6,
+      duration: '1h 30m',
+      rating: 4.6,
+      progress: 0,
+      description: 'Master the art of setting and achieving meaningful goals. Learn proven strategies for goal setting, tracking, and maintaining motivation throughout your journey.',
+      instructor: {
+        name: 'Michael Brown',
+        title: 'Success Coach',
+        image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg'
       },
-      {
-        id: '2',
-        title: 'Setting Up Your System',
-        duration: '45m',
-        completed: false,
-        lessons: [
-          { id: '2.1', title: 'Choosing the Right Tools', duration: '15m', completed: true },
-          { id: '2.2', title: 'Creating Tracking Mechanisms', duration: '15m', completed: false },
-          { id: '2.3', title: 'Setting Up Review Cycles', duration: '15m', completed: false }
-        ]
+      syllabus: [
+        {
+          id: '1',
+          title: 'Goal Setting Fundamentals',
+          duration: '30m',
+          completed: false,
+          lessons: [
+            { id: '1.1', title: 'SMART Goals Framework', duration: '15m', completed: false },
+            { id: '1.2', title: 'Vision and Goal Alignment', duration: '15m', completed: false }
+          ]
+        },
+        {
+          id: '2',
+          title: 'Action Planning',
+          duration: '30m',
+          completed: false,
+          lessons: [
+            { id: '2.1', title: 'Breaking Down Goals', duration: '15m', completed: false },
+            { id: '2.2', title: 'Creating Action Steps', duration: '15m', completed: false }
+          ]
+        },
+        {
+          id: '3',
+          title: 'Progress Tracking',
+          duration: '30m',
+          completed: false,
+          lessons: [
+            { id: '3.1', title: 'Tracking Methods', duration: '15m', completed: false },
+            { id: '3.2', title: 'Adjusting Your Plan', duration: '15m', completed: false }
+          ]
+        }
+      ]
+    },
+    '3': {
+      id: '3',
+      title: 'Mindfulness for Better Focus',
+      category: 'mindfulness',
+      image: 'https://images.pexels.com/photos/3560044/pexels-photo-3560044.jpeg',
+      lessons: 10,
+      duration: '3h 15m',
+      rating: 4.9,
+      progress: 0.6,
+      description: 'Enhance your focus and productivity through mindfulness practices. Learn techniques to stay present, reduce stress, and improve your mental clarity.',
+      instructor: {
+        name: 'Emma Chen',
+        title: 'Mindfulness Coach',
+        image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg'
       },
-      {
-        id: '3',
-        title: 'Maintaining Momentum',
-        duration: '35m',
-        completed: false,
-        lessons: [
-          { id: '3.1', title: 'Dealing with Setbacks', duration: '12m', completed: false },
-          { id: '3.2', title: 'Adjusting Your System', duration: '13m', completed: false },
-          { id: '3.3', title: 'Long-term Sustainability', duration: '10m', completed: false }
-        ]
-      }
-    ]
+      syllabus: [
+        {
+          id: '1',
+          title: 'Introduction to Mindfulness',
+          duration: '45m',
+          completed: true,
+          lessons: [
+            { id: '1.1', title: 'What is Mindfulness?', duration: '15m', completed: true },
+            { id: '1.2', title: 'Benefits of Practice', duration: '15m', completed: true },
+            { id: '1.3', title: 'Getting Started', duration: '15m', completed: true }
+          ]
+        },
+        {
+          id: '2',
+          title: 'Basic Techniques',
+          duration: '60m',
+          completed: true,
+          lessons: [
+            { id: '2.1', title: 'Breath Awareness', duration: '20m', completed: true },
+            { id: '2.2', title: 'Body Scan', duration: '20m', completed: true },
+            { id: '2.3', title: 'Walking Meditation', duration: '20m', completed: true }
+          ]
+        },
+        {
+          id: '3',
+          title: 'Advanced Practice',
+          duration: '90m',
+          completed: false,
+          lessons: [
+            { id: '3.1', title: 'Mindful Working', duration: '30m', completed: false },
+            { id: '3.2', title: 'Stress Reduction', duration: '30m', completed: false },
+            { id: '3.3', title: 'Integration', duration: '30m', completed: false }
+          ]
+        }
+      ]
+    }
   };
+
+  const course = coursesData[id as string];
+
+  if (!course) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <ArrowLeft size={24} color="#1F2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Course Not Found</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <View style={[styles.content, styles.centerContent]}>
+          <Text style={styles.errorText}>This course does not exist.</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -169,6 +293,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F9FAFB',
+  },
+  centerContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 16,
+    color: '#6B7280',
   },
   header: {
     flexDirection: 'row',
