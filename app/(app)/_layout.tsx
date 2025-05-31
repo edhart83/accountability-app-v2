@@ -3,10 +3,12 @@ import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { usePathname, useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { Tabs } from 'expo-router';
+import { Tabs, withLayoutContext } from 'expo-router';
 import { Chrome as Home, Target, Blocks, Users, Menu, X } from 'lucide-react-native';
 import Sidebar from '@/components/layout/Sidebar';
 import MobileHeader from '@/components/layout/MobileHeader';
+
+const TabsWithLayout = withLayoutContext(Tabs);
 
 export default function AppLayout() {
   const { width } = useWindowDimensions();
@@ -48,7 +50,7 @@ export default function AppLayout() {
         />
       )}
       <View style={isDesktop ? styles.desktopContent : styles.content}>
-        <Tabs
+        <TabsWithLayout
           screenOptions={{
             headerShown: false,
             tabBarStyle: isDesktop ? { display: 'none' } : styles.tabBar,
@@ -58,52 +60,34 @@ export default function AppLayout() {
               tabBarShowLabel: false,
               tabBarItemStyle: styles.tabBarItem,
             }),
+            tabBarIcon: ({ color, focused }) => {
+              const routeName = pathname.split('/')[2] || 'dashboard';
+              let Icon = Home;
+              
+              switch (routeName) {
+                case 'goals':
+                  Icon = Target;
+                  break;
+                case 'courses':
+                  Icon = Blocks;
+                  break;
+                case 'partners':
+                  Icon = Users;
+                  break;
+                case 'more':
+                  Icon = isMoreOpen ? X : Menu;
+                  break;
+              }
+              
+              return (
+                <View style={styles.tabIconContainer}>
+                  <Icon size={24} color={color} />
+                  {focused && <View style={styles.activeIndicator} />}
+                </View>
+              );
+            },
           }}
-        >
-          <Tabs.Screen
-            name="dashboard"
-            options={{
-              ...((!isDesktop) && {
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    <Home size={24} color={color} />
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }),
-            }}
-          />
-          <Tabs.Screen
-            name="goals"
-            options={{
-              ...((!isDesktop) && {
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    <Target size={24} color={color} />
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }),
-            }}
-          />
-          <Tabs.Screen
-            name="more"
-            options={{
-              ...((!isDesktop) && {
-                tabBarIcon: ({ color, focused }) => (
-                  <View style={styles.tabIconContainer}>
-                    {isMoreOpen ? (
-                      <X size={24} color={color} />
-                    ) : (
-                      <Menu size={24} color={color} />
-                    )}
-                    {focused && <View style={styles.activeIndicator} />}
-                  </View>
-                ),
-              }),
-            }}
-          />
-        </Tabs>
+        />
       </View>
     </View>
   );
