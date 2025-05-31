@@ -105,48 +105,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (name: string, username: string, email: string, password: string) => {
-    setIsLoading(true);
-    try {
-      const { data: { user: authUser }, error: signUpError } = await supabase.auth
-        .signUp({
+  setIsLoading(true);
+  try {
+    const {
+      data: { user: authUser },
+      error: signUpError,
+    } = await supabase.auth.signUp({ email, password });
+
+    if (signUpError) throw signUpError;
+
+    if (!authUser) throw new Error('No user returned from signUp.');
+
+    // Insert user profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .insert([
+        {
+          id: authUser.id, // or use 'user_id' if your table is set up that way
+          name,
+          username,
           email,
-          password,
-        });
+        },
+      ])
+      .select()
+      .single();
 
-      if (signUpError) throw signUpError;
+    if (profileError) throw profileError;
 
-      if (authUser) {
-        // Create profile
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: authUser.id,
-              name,
-              username,
-              email,
-            }
-          ])
-          .select()
-          .single();
+    // Insert default dashboard_data (optional)
+    const { error: dashboardError } = await supabase
+      .from('dashboard_data')
+      .insert([{ id: authUser.id }]); // use 'user_id' if needed
 
-        if (profileError) throw profileError;
+    if (dashboardError) console.warn('Optional: failed to insert dashboard data', dashboardError.message);
 
-        // Create dashboard data
-        await supabase
-          .from('dashboard_data')
-          .insert([{ id: authUser.id }]);
+    setUser(profile);
+    setIsAuthenticated(true);
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-        setUser(profile);
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const logout = async () => {
     setIsLoading(true);
