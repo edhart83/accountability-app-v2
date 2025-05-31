@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Calendar, MessageCircle, Clock } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { Calendar, MessageCircle } from 'lucide-react-native';
 
 interface PartnerProps {
   id: string;
@@ -15,8 +16,14 @@ interface PartnerCardProps {
 }
 
 const PartnerCard: React.FC<PartnerCardProps> = ({ partner }) => {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push(`/partners/${partner.id}`);
+  };
+
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
       <View style={styles.header}>
         <Image source={{ uri: partner.image }} style={styles.partnerImage} />
         <View style={styles.partnerInfo}>
@@ -37,16 +44,22 @@ const PartnerCard: React.FC<PartnerCardProps> = ({ partner }) => {
           <Text style={styles.meetingText}>Next meeting: {partner.nextMeeting}</Text>
         </View>
         <View style={styles.actionsContainer}>
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => {/* Handle message */}}
+          >
             <MessageCircle size={20} color="#FFFFFF" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.scheduleButton}>
-            <Clock size={16} color="#3B82F6" style={styles.scheduleIcon} />
+          <TouchableOpacity 
+            style={styles.scheduleButton}
+            onPress={() => {/* Handle schedule */}}
+          >
+            <Calendar size={16} color="#3B82F6" style={styles.scheduleIcon} />
             <Text style={styles.scheduleText}>Schedule</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
