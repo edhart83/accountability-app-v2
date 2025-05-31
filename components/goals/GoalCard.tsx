@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { useRouter } from 'expo-router';
 import { ChevronRight, Calendar } from 'lucide-react-native';
 import ProgressBar from '@/components/ui/ProgressBar';
 
@@ -19,6 +20,7 @@ interface GoalCardProps {
 const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
+  const router = useRouter();
   
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -58,6 +60,7 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
   return (
     <TouchableOpacity 
       style={[styles.card, isTablet && styles.cardTablet]}
+      onPress={() => router.push(`/goals/${goal.id}`)}
     >
       <View style={styles.header}>
         <View style={styles.categoryBadge}>
@@ -85,7 +88,10 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
         />
       </View>
       
-      <TouchableOpacity style={styles.detailsButton}>
+      <TouchableOpacity 
+        style={styles.detailsButton}
+        onPress={() => router.push(`/goals/${goal.id}`)}
+      >
         <Text style={styles.detailsText}>View Details</Text>
         <ChevronRight size={16} color="#3B82F6" />
       </TouchableOpacity>

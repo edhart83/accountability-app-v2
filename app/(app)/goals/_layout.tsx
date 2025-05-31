@@ -11,6 +11,7 @@ export default function GoalsLayout() {
           animation: 'slide_from_bottom',
         }}
       />
+      <Stack.Screen name="[id]" />
     </Stack>
   );
 }
