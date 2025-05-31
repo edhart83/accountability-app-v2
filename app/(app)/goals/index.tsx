@@ -159,7 +159,7 @@ export default function Goals() {
           styles.goalsContainer,
           isTablet && styles.goalsContainerTablet
         ]}
-      ]} refreshing={isLoading}>
+        refreshing={isLoading}>
         {isLoading ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateText}>Loading goals...</Text>
