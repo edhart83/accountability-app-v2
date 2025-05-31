@@ -6,17 +6,22 @@ import { supabase } from '@/utils/supabase';
 type User = {
   id: string;
   name: string;
-  username: string;
   email: string;
+  interests: string[];
+  bio: string;
+  goals_completed: number;
+  days_active: number;
+  success_rate: string;
   created_at: string;
+  updated_at: string;
 };
 
 type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
-  login: (username: string, password: string) => Promise<void>;
-  register: (name: string, username: string, email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -45,8 +50,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             id: session.user.id,
             email: session.user.email || '',
             name: '',
-            username: '',
+            interests: [],
+            bio: '',
+            goals_completed: 0,
+            days_active: 0,
+            success_rate: '0%',
             created_at: session.user.created_at,
+            updated_at: session.user.created_at,
           });
           setIsAuthenticated(true);
           
@@ -74,12 +84,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
       const { data: { user: authUser }, error: signInError } = await supabase.auth
         .signInWithPassword({
-          email: username,
+          email: email,
           password: password,
         });
 
@@ -104,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (name: string, username: string, email: string, password: string) => {
+  const register = async (name: string, email: string, password: string) => {
   setIsLoading(true);
   try {
     const {
@@ -123,8 +133,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         {
           id: authUser.id, // or use 'user_id' if your table is set up that way
           name,
-          username,
           email,
+          interests: [],
+          bio: '',
+          goals_completed: 0,
+          days_active: 0,
+          success_rate: '0%',
         },
       ])
       .select()

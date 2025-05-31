@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Eye, EyeOff, ArrowRight } from 'lucide-react-native';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +15,7 @@ export default function Login() {
   const { login } = useAuth();
 
   const handleLogin = async () => {
-    if (!username || !password) {
+    if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
@@ -24,10 +24,10 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      await login(username, password);
+      await login(email, password);
       router.replace('/dashboard');
     } catch (err) {
-      setError('Invalid username or password');
+      setError('Invalid email or password');
     } finally {
       setIsLoading(false);
     }
@@ -51,14 +51,15 @@ export default function Login() {
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
             
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Username</Text>
+              <Text style={styles.label}>Email</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Enter your username"
+                placeholder="Enter your email"
                 placeholderTextColor="#94A3B8"
-                value={username}
-                onChangeText={setUsername}
+                value={email}
+                onChangeText={setEmail}
                 autoCapitalize="none"
+                keyboardType="email-address"
               />
             </View>
             
