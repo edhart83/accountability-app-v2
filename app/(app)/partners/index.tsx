@@ -251,15 +251,19 @@ const styles = StyleSheet.create({
   },
   section: {
     padding: 16,
+    '@media (max-width: 768px)': {
+      padding: 12,
+    },
   },
   sectionTitle: {
     fontFamily: 'Inter-SemiBold',
     fontSize: 18,
     color: '#1F2937',
     marginBottom: 16,
-  },
-  requestsSection: {
-    marginTop: 24,
+    '@media (max-width: 768px)': {
+      fontSize: 16,
+      marginBottom: 12,
+    },
   },
   sectionDescription: {
     fontFamily: 'Inter-Regular',
@@ -267,6 +271,11 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginBottom: 24,
     lineHeight: 24,
+    '@media (max-width: 768px)': {
+      fontSize: 14,
+      marginBottom: 16,
+      lineHeight: 20,
+    },
   },
   partnerCard: {
     backgroundColor: '#FFFFFF',
@@ -278,39 +287,48 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    '@media (max-width: 768px)': {
+      padding: 10,
+      marginBottom: 8,
+    },
   },
   partnerImage: {
     width: 48,
     height: 48,
     borderRadius: 24,
+    '@media (max-width: 768px)': {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+    },
   },
   partnerDetails: {
     flex: 1,
+    marginLeft: 12,
     marginRight: 12,
-  },
-  nextMeeting: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 16,
-  },
-  nextMeetingText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 12,
-    color: '#4B5563',
-    marginLeft: 4,
+    '@media (max-width: 768px)': {
+      marginLeft: 10,
+      marginRight: 8,
+    },
   },
   partnerName: {
     fontFamily: 'Inter-SemiBold',
     fontSize: 16,
     color: '#1F2937',
     marginBottom: 4,
+    '@media (max-width: 768px)': {
+      fontSize: 14,
+      marginBottom: 2,
+    },
   },
   goalTags: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    '@media (max-width: 768px)': {
+      marginTop: 4,
+    },
   },
   goalTag: {
     backgroundColor: '#F3F4F6',
@@ -319,11 +337,42 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginRight: 8,
     marginBottom: 4,
+    '@media (max-width: 768px)': {
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      marginRight: 6,
+      marginBottom: 2,
+    },
   },
   goalTagText: {
     fontFamily: 'Inter-Medium',
     fontSize: 12,
     color: '#4B5563',
+    '@media (max-width: 768px)': {
+      fontSize: 11,
+    },
+  },
+  nextMeeting: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+    '@media (max-width: 768px)': {
+      paddingHorizontal: 6,
+      paddingVertical: 3,
+    },
+  },
+  nextMeetingText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 12,
+    color: '#4B5563',
+    marginLeft: 4,
+    '@media (max-width: 768px)': {
+      fontSize: 11,
+      marginLeft: 3,
+    },
   },
   connectButton: {
     width: 40,
@@ -332,6 +381,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#3B82F6',
     justifyContent: 'center',
     alignItems: 'center',
+    '@media (max-width: 768px)': {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+    },
   },
   requestCard: {
     backgroundColor: '#FFFFFF',
@@ -345,42 +399,52 @@ const styles = StyleSheet.create({
     elevation: 2,
     flexDirection: 'row',
     alignItems: 'flex-start',
-  },
-  requestDetails: {
-    flex: 1,
-    marginLeft: 12,
-    marginRight: 12,
-  },
-  requestDate: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#4B5563',
-    marginBottom: 8,
+    '@media (max-width: 768px)': {
+      padding: 10,
+      marginBottom: 8,
+    },
   },
   requestActions: {
     flexDirection: 'column',
     gap: 8,
+    '@media (max-width: 768px)': {
+      gap: 6,
+    },
   },
   declineButton: {
     backgroundColor: '#FEE2E2',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
+    '@media (max-width: 768px)': {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+    },
   },
   declineText: {
     fontFamily: 'Inter-Medium',
     fontSize: 14,
     color: '#EF4444',
+    '@media (max-width: 768px)': {
+      fontSize: 12,
+    },
   },
   acceptButton: {
     backgroundColor: '#3B82F6',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
+    '@media (max-width: 768px)': {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+    },
   },
   acceptText: {
     fontFamily: 'Inter-Medium',
     fontSize: 14,
     color: '#FFFFFF',
+    '@media (max-width: 768px)': {
+      fontSize: 12,
+    },
   },
 });
