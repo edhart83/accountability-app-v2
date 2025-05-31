@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { supabase } from '@/utils/supabase';
+import { useAuth } from '@/context/AuthContext';
 import { Plus, Filter, Calendar, CircleCheck as CheckCircle, Circle as XCircle, Clock } from 'lucide-react-native';
 import GoalCard from '@/components/goals/GoalCard';
 
@@ -17,51 +19,36 @@ interface Goal {
 export default function Goals() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
+  const { user } = useAuth();
   const router = useRouter();
   const params = useLocalSearchParams();
   const [activeFilter, setActiveFilter] = useState('all');
-  const [goals, setGoals] = useState<Goal[]>([
-    {
-      id: '1',
-      title: 'Complete React Native Course',
-      category: 'Learning',
-      dueDate: '2025-05-15',
-      progress: 0.65,
-      status: 'in-progress',
-    },
-    {
-      id: '2',
-      title: 'Run 5km Three Times a Week',
-      category: 'Health',
-      dueDate: '2025-05-30',
-      progress: 0.33,
-      status: 'in-progress',
-    },
-    {
-      id: '3',
-      title: 'Read 10 Books This Year',
-      category: 'Personal',
-      dueDate: '2025-12-31',
-      progress: 0.2,
-      status: 'in-progress',
-    },
-    {
-      id: '4',
-      title: 'Learn Spanish Basics',
-      category: 'Learning',
-      dueDate: '2025-04-10',
-      progress: 1,
-      status: 'completed',
-    },
-    {
-      id: '5',
-      title: 'Launch Personal Website',
-      category: 'Career',
-      dueDate: '2025-02-28',
-      progress: 0,
-      status: 'missed',
-    },
-  ]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchGoals = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('goals')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('due_date', { ascending: true });
+
+      if (error) throw error;
+      setGoals(data || []);
+    } catch (error) {
+      console.error('Error fetching goals:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchGoals();
+  }, [fetchGoals]);
 
   useEffect(() => {
     if (params?.newGoal) {
@@ -172,8 +159,12 @@ export default function Goals() {
           styles.goalsContainer,
           isTablet && styles.goalsContainerTablet
         ]}
-      >
-        {renderGoals()}
+      ]} refreshing={isLoading}>
+        {isLoading ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>Loading goals...</Text>
+          </View>
+        ) : renderGoals()}
       </ScrollView>
     </View>
   );
@@ -270,7 +261,7 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontFamily: 'Inter-Medium',
     fontSize: 16,
-    color: '#6B7280',
+    color: '#4B5563',
     marginBottom: 16,
   },
   emptyStateButton: {
