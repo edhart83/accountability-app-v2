@@ -31,14 +31,14 @@ export default function AppLayout() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      {isDesktop ? (
+      {isDesktop && (
         <View style={styles.desktopLayout}>
           <Sidebar 
-             routes={routes} 
-             activeRoute={pathname.split('/')[2] || 'dashboard'} 
-             onLogout={handleLogout}
-             isMoreOpen={isMoreOpen}
-             setIsMoreOpen={setIsMoreOpen}
+            routes={routes} 
+            activeRoute={pathname.split('/')[2] || 'dashboard'} 
+            onLogout={handleLogout}
+            isMoreOpen={isMoreOpen}
+            setIsMoreOpen={setIsMoreOpen}
           />
           <View style={styles.desktopContent}>
             <Tabs
@@ -49,7 +49,8 @@ export default function AppLayout() {
             />
           </View>
         </View>
-      ) : (
+      )}
+      {!isDesktop && (
         <View style={styles.mobileLayout}>
           <MobileHeader 
             routes={routes}
@@ -63,34 +64,68 @@ export default function AppLayout() {
               tabBarInactiveTintColor: '#6B7280',
               tabBarShowLabel: false,
               tabBarItemStyle: styles.tabBarItem,
-              tabBarIcon: ({ color, focused }) => {
-                const routeName = pathname.split('/')[2] || 'dashboard';
-                let Icon = Home;
-                
-                switch (routeName) {
-                  case 'goals':
-                    Icon = Target;
-                    break;
-                  case 'courses':
-                    Icon = Blocks;
-                    break;
-                  case 'partners':
-                    Icon = Users;
-                    break;
-                  case 'more':
-                    Icon = isMoreOpen ? X : Menu;
-                    break;
-                }
-                
-                return (
+            }}
+          >
+            <Tabs.Screen
+              name="dashboard/index"
+              options={{
+                tabBarIcon: ({ color, focused }) => (
                   <View style={styles.tabIconContainer}>
-                    <Icon size={24} color={color} />
+                    <Home size={24} color={color} />
                     {focused && <View style={styles.activeIndicator} />}
                   </View>
-                );
-              },
-            }}
-          />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="goals"
+              options={{
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Target size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="courses"
+              options={{
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Blocks size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="partners/index"
+              options={{
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    <Users size={24} color={color} />
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="more/index"
+              options={{
+                tabBarIcon: ({ color, focused }) => (
+                  <View style={styles.tabIconContainer}>
+                    {isMoreOpen ? (
+                      <X size={24} color={color} />
+                    ) : (
+                      <Menu size={24} color={color} />
+                    )}
+                    {focused && <View style={styles.activeIndicator} />}
+                  </View>
+                ),
+              }}
+            />
+          </Tabs>
         </View>
       )}
     </View>
