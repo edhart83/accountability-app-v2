@@ -54,7 +54,7 @@ export default function Dashboard() {
         .from('partnerships')
         .select(`
           id,
-          partner:partner_id!partnerships_partner_id_fkey (
+          partner:partner_id (
             id,
             name,
             image_url
@@ -67,8 +67,6 @@ export default function Dashboard() {
 
       if (!partnershipError && partnership) {
         setPartnerData(partnership);
-      } else if (partnershipError) {
-        console.error('Partner query error:', partnershipError);
       }
     } catch (error) {
       console.error('Error fetching partner data:', error);
