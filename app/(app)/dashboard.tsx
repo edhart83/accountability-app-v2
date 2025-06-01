@@ -48,32 +48,32 @@ export default function Dashboard() {
     }
   };
 
-  const { data: partnership, error: partnershipError } = await supabase
-  .from('partnerships')
-  .select(`
-    id,
-    partner:partner_id!partnerships_partner_id_fkey (
-      id,
-      name,
-      image_url
-    ),
-    next_meeting
-  `)
-  .eq('user_id', user?.id)
-  .eq('status', 'active')
-  .single();
+  const fetchPartnerData = async () => {
+    try {
+      const { data: partnership, error: partnershipError } = await supabase
+        .from('partnerships')
+        .select(`
+          id,
+          partner:partner_id!partnerships_partner_id_fkey (
+            id,
+            name,
+            image_url
+          ),
+          next_meeting
+        `)
+        .eq('user_id', user?.id)
+        .eq('status', 'active')
+        .single();
 
-
-    if (!partnershipError && partnership) {
-      setPartnerData(partnership);
-    } else if (partnershipError) {
-      console.error('Partner query error:', partnershipError);
+      if (!partnershipError && partnership) {
+        setPartnerData(partnership);
+      } else if (partnershipError) {
+        console.error('Partner query error:', partnershipError);
+      }
+    } catch (error) {
+      console.error('Error fetching partner data:', error);
     }
-  } catch (error) {
-    console.error('Error fetching partner data:', error);
-  }
-};
-
+  };
 
   // Sample data
   const stats = [
