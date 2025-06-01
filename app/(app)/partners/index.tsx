@@ -1,74 +1,135 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
+import { supabase } from '@/utils/supabase';
+import { useAuth } from '@/context/AuthContext';
 import { Search, Calendar, MessageCircle, UserPlus } from 'lucide-react-native';
 import TextInput from '@/components/ui/TextInput';
 
+interface Partner {
+  id: string;
+  name: string;
+  interests: string[];
+  image_url: string;
+  next_meeting: string;
+}
+
+interface PartnerRequest {
+  id: string;
+  sender: {
+    id: string;
+    name: string;
+    interests: string[];
+    image_url: string;
+  };
+  requested_at: string;
+}
+
 export default function Partners() {
   const router = useRouter();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('myPartners');
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [requests, setRequests] = useState<PartnerRequest[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Sample suggested partners data
-  const suggestions = [
-    {
-      id: '1',
-      name: 'James Smith',
-      goals: ['Running', 'Reading'],
-      image: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg',
-      compatibility: '85% match',
-    },
-    {
-      id: '2',
-      name: 'Emma Garcia',
-      goals: ['Yoga', 'Programming'],
-      image: 'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg',
-      compatibility: '78% match',
-    },
-    {
-      id: '3',
-      name: 'Robert Johnson',
-      goals: ['Cycling', 'Language Learning'],
-      image: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg',
-      compatibility: '72% match',
-    },
-  ];
+  useEffect(() => {
+    if (user) {
+      fetchPartners();
+      fetchPartnerRequests();
+    }
+  }, [user]);
 
-  // Sample data
-  const partners = [
-    {
-      id: '1',
-      name: 'David Wilson',
-      goals: ['Running', 'Learning React'],
-      image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg',
-      nextMeeting: 'Tomorrow, 3:00 PM',
-    },
-    {
-      id: '2',
-      name: 'Sarah Johnson',
-      goals: ['Weight Training', 'Spanish'],
-      image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg',
-      nextMeeting: 'Friday, 5:30 PM',
-    },
-  ];
+  const fetchPartners = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('partnerships')
+        .select(`
+          id,
+          partner:partner_id(
+            id,
+            name,
+            interests,
+            image_url
+          ),
+          next_meeting
+        `)
+        .eq('user_id', user?.id)
+        .eq('status', 'active');
 
-  const requests = [
-    {
-      id: '1',
-      name: 'Michael Brown',
-      goals: ['Running', 'Reading'],
-      image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg',
-      requestDate: '2 days ago',
-    },
-    {
-      id: '2',
-      name: 'Jennifer Lee',
-      goals: ['Meditation', 'Coding'],
-      image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg',
-      requestDate: '1 week ago',
-    },
-  ];
+      if (error) throw error;
+      setPartners(data?.map(p => ({
+        id: p.partner.id,
+        name: p.partner.name,
+        interests: p.partner.interests,
+        image_url: p.partner.image_url,
+        next_meeting: p.next_meeting
+      })) || []);
+    } catch (error) {
+      console.error('Error fetching partners:', error);
+    }
+  };
+
+  const fetchPartnerRequests = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('partnerships')
+        .select(`
+          id,
+          sender:user_id(
+            id,
+            name,
+            interests,
+            image_url
+          ),
+          created_at
+        `)
+        .eq('partner_id', user?.id)
+        .eq('status', 'pending');
+
+      if (error) throw error;
+      setRequests(data?.map(r => ({
+        id: r.id,
+        sender: r.sender,
+        requested_at: r.created_at
+      })) || []);
+    } catch (error) {
+      console.error('Error fetching partner requests:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAcceptRequest = async (requestId: string) => {
+    try {
+      const { error } = await supabase
+        .from('partnerships')
+        .update({ status: 'active' })
+        .eq('id', requestId);
+
+      if (error) throw error;
+      await fetchPartners();
+      await fetchPartnerRequests();
+    } catch (error) {
+      console.error('Error accepting request:', error);
+    }
+  };
+
+  const handleDeclineRequest = async (requestId: string) => {
+    try {
+      const { error } = await supabase
+        .from('partnerships')
+        .delete()
+        .eq('id', requestId);
+
+      if (error) throw error;
+      await fetchPartnerRequests();
+    } catch (error) {
+      console.error('Error declining request:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -112,25 +173,30 @@ export default function Partners() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Your Partners</Text>
               {partners.map(partner => (
-                <TouchableOpacity 
-                  key={partner.id} 
+                <TouchableOpacity
+                  key={partner.id}
                   style={styles.partnerCard}
                   onPress={() => router.push(`/partners/${partner.id}`)}
                 >
-                  <Image source={{ uri: partner.image }} style={styles.partnerImage} />
+                  <Image 
+                    source={{ uri: partner.image_url || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg' }} 
+                    style={styles.partnerImage} 
+                  />
                   <View style={styles.partnerDetails}>
                     <Text style={styles.partnerName}>{partner.name}</Text>
                     <View style={styles.goalTags}>
-                      {partner.goals.map((goal, idx) => (
+                      {partner.interests?.map((interest, idx) => (
                         <View key={idx} style={styles.goalTag}>
-                          <Text style={styles.goalTagText}>{goal}</Text>
+                          <Text style={styles.goalTagText}>{interest}</Text>
                         </View>
                       ))}
                     </View>
                   </View>
                   <View style={styles.nextMeeting}>
                     <Calendar size={14} color="#4B5563" />
-                    <Text style={styles.nextMeetingText}>{partner.nextMeeting}</Text>
+                    <Text style={styles.nextMeetingText}>
+                      {new Date(partner.next_meeting).toLocaleDateString()}
+                    </Text>
                   </View>
                 </TouchableOpacity>
               ))}
@@ -143,25 +209,36 @@ export default function Partners() {
                   <TouchableOpacity 
                     key={request.id} 
                     style={styles.requestCard}
-                    onPress={() => router.push(`/partners/${request.id}`)}
+                    onPress={() => router.push(`/partners/${request.sender.id}`)}
                   >
-                    <Image source={{ uri: request.image }} style={styles.partnerImage} />
+                    <Image 
+                      source={{ uri: request.sender.image_url || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg' }} 
+                      style={styles.partnerImage} 
+                    />
                     <View style={styles.requestDetails}>
-                      <Text style={styles.partnerName}>{request.name}</Text>
-                      <Text style={styles.requestDate}>Requested {request.requestDate}</Text>
+                      <Text style={styles.partnerName}>{request.sender.name}</Text>
+                      <Text style={styles.requestDate}>
+                        Requested {new Date(request.requested_at).toLocaleDateString()}
+                      </Text>
                       <View style={styles.goalTags}>
-                        {request.goals.map((goal, idx) => (
+                        {request.sender.interests?.map((interest, idx) => (
                           <View key={idx} style={styles.goalTag}>
-                            <Text style={styles.goalTagText}>{goal}</Text>
+                            <Text style={styles.goalTagText}>{interest}</Text>
                           </View>
                         ))}
                       </View>
                     </View>
                     <View style={styles.requestActions}>
-                      <TouchableOpacity style={styles.declineButton}>
+                      <TouchableOpacity 
+                        style={styles.declineButton}
+                        onPress={() => handleDeclineRequest(request.id)}
+                      >
                         <Text style={styles.declineText}>Decline</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.acceptButton}>
+                      <TouchableOpacity 
+                        style={styles.acceptButton}
+                        onPress={() => handleAcceptRequest(request.id)}
+                      >
                         <Text style={styles.acceptText}>Accept</Text>
                       </TouchableOpacity>
                     </View>
@@ -172,32 +249,23 @@ export default function Partners() {
           </>
         ) : (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Suggested Partners</Text>
-            <Text style={styles.sectionDescription}>
-              Based on your goals and interests, we've found people who might be great accountability partners for you.
-            </Text>
-            {partners.map(partner => (
-              <TouchableOpacity 
-                key={partner.id} 
-                style={styles.partnerCard}
-                onPress={() => router.push(`/partners/${partner.id}`)}
-              >
-                <Image source={{ uri: partner.image }} style={styles.partnerImage} />
-                <View style={styles.partnerDetails}>
-                  <Text style={styles.partnerName}>{partner.name}</Text>
-                  <View style={styles.goalTags}>
-                    {partner.goals.map((goal, idx) => (
-                      <View key={idx} style={styles.goalTag}>
-                        <Text style={styles.goalTagText}>{goal}</Text>
-                      </View>
-                    ))}
-                  </View>
+            {isLoading ? (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>Loading partners...</Text>
+              </View>
+            ) : (
+              <>
+                <Text style={styles.sectionTitle}>Find Partners</Text>
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyStateText}>
+                    No potential partners found at the moment.
+                  </Text>
+                  <TouchableOpacity style={styles.refreshButton}>
+                    <Text style={styles.refreshButtonText}>Refresh</Text>
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.connectButton}>
-                  <UserPlus size={20} color="#FFFFFF" />
-                </TouchableOpacity>
-              </TouchableOpacity>
-            ))}
+              </>
+            )}
           </View>
         )}
       </ScrollView>
@@ -450,5 +518,37 @@ const styles = StyleSheet.create({
     '@media (max-width: 768px)': {
       fontSize: 12,
     },
+  },
+  emptyState: {
+    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    marginTop: 16,
+  },
+  emptyStateText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 16,
+    color: '#6B7280',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  refreshButton: {
+    backgroundColor: '#3B82F6',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  refreshButtonText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
   },
 });
