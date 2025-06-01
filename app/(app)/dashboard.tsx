@@ -48,22 +48,21 @@ export default function Dashboard() {
     }
   };
 
-  const fetchPartnerData = async () => {
-  try {
-    const { data: partnership, error: partnershipError } = await supabase
-      .from('partnerships')
-      .select(`
-        id,
-        partner:partner_id!partnerships_partner_id_fkey (
-          id,
-          name,
-          image_url
-        ),
-        next_meeting
-      `)
-      .eq('user_id', user?.id)
-      .eq('status', 'active')
-      .single();
+  const { data: partnership, error: partnershipError } = await supabase
+  .from('partnerships')
+  .select(`
+    id,
+    partner:partner_id!partnerships_partner_id_fkey (
+      id,
+      name,
+      image_url
+    ),
+    next_meeting
+  `)
+  .eq('user_id', user?.id)
+  .eq('status', 'active')
+  .single();
+
 
     if (!partnershipError && partnership) {
       setPartnerData(partnership);
