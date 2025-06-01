@@ -8,8 +8,8 @@ interface CourseProps {
   id: string;
   title: string;
   category: string;
-  image: string;
-  lessons: number;
+  image_url: string;
+  lessons_count: number;
   duration: string;
   rating: number;
   progress: number;
@@ -33,14 +33,14 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
       style={[styles.card, isTablet && styles.cardTablet]} 
       onPress={handlePress}
     >
-      <Image source={{ uri: course.image }} style={styles.courseImage} />
+      <Image source={{ uri: course.image_url || 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg' }} style={styles.courseImage} />
       <View style={styles.courseContent}>
         <Text style={styles.courseTitle}>{course.title}</Text>
         
         <View style={styles.courseStats}>
           <View style={styles.courseStat}>
             <BookOpen size={14} color="#6B7280" style={styles.courseStatIcon} />
-            <Text style={styles.courseStatText}>{course.lessons} Lessons</Text>
+            <Text style={styles.courseStatText}>{course.lessons_count} Lessons</Text>
           </View>
           <View style={styles.courseStat}>
             <Clock size={14} color="#6B7280" style={styles.courseStatIcon} />

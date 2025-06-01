@@ -1,55 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { supabase } from '@/utils/supabase';
 import { Search, Filter } from 'lucide-react-native';
 import TextInput from '@/components/ui/TextInput';
 import CourseCard from '@/components/courses/CourseCard';
+
+interface Course {
+  id: string;
+  title: string;
+  category: string;
+  image_url: string;
+  lessons_count: number;
+  duration: string;
+  rating: number;
+  progress: number;
+}
 
 export default function Courses() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState('all');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Sample data
   const categories = [
     { id: 'all', name: 'All' },
     { id: 'productivity', name: 'Productivity' },
-    { id: 'health', name: 'Health' },
     { id: 'mindfulness', name: 'Mindfulness' },
-    { id: 'career', name: 'Career' },
+    { id: 'learning', name: 'Learning' },
   ];
 
-  const courses = [
-    {
-      id: '1',
-      title: 'Building Effective Accountability Systems',
-      category: 'productivity',
-      image: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg',
-      lessons: 8,
-      duration: '2h 45m',
-      rating: 4.8,
-      progress: 0.25,
-    },
-    {
-      id: '2',
-      title: 'Goal Setting for Success',
-      category: 'productivity',
-      image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg',
-      lessons: 6,
-      duration: '1h 30m',
-      rating: 4.6,
-      progress: 0,
-    },
-    {
-      id: '3',
-      title: 'Mindfulness for Better Focus',
-      category: 'mindfulness',
-      image: 'https://images.pexels.com/photos/3560044/pexels-photo-3560044.jpeg',
-      lessons: 10,
-      duration: '3h 15m',
-      rating: 4.9,
-      progress: 0.6,
     },
     {
       id: '4',
@@ -70,8 +52,25 @@ export default function Courses() {
       duration: '2h 20m',
       rating: 4.5,
       progress: 0,
-    },
-  ];
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setCourses(data || []);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredCourses = courses.filter(course => {
     const matchesCategory = category === 'all' || course.category === category;
@@ -121,7 +120,7 @@ export default function Courses() {
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={[
-          styles.coursesContainer,
+          styles.coursesContainer, 
           isTablet && styles.coursesContainerTablet
         ]}
       >
@@ -129,7 +128,15 @@ export default function Courses() {
           filteredCourses.map(course => (
             <CourseCard key={course.id} course={course} />
           ))
-        ) : (
+        ) : isLoading ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateTitle}>No courses found</Text>
+            <Text style={styles.emptyStateDescription}>
+              Try adjusting your search or category filters
+            </Text>
+          </View>
+        )}
+        {!isLoading && filteredCourses.length === 0 && (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateTitle}>No courses found</Text>
             <Text style={styles.emptyStateDescription}>
