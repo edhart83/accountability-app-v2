@@ -31,27 +31,6 @@ export default function Courses() {
     { id: 'mindfulness', name: 'Mindfulness' },
     { id: 'learning', name: 'Learning' },
   ];
-
-    },
-    {
-      id: '4',
-      title: 'Building Healthy Habits',
-      category: 'health',
-      image: 'https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg',
-      lessons: 12,
-      duration: '4h 10m',
-      rating: 4.7,
-      progress: 0,
-    },
-    {
-      id: '5',
-      title: 'Career Growth Strategies',
-      category: 'career',
-      image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg',
-      lessons: 8,
-      duration: '2h 20m',
-      rating: 4.5,
-      progress: 0,
   useEffect(() => {
     fetchCourses();
   }, []);
