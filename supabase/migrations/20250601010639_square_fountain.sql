@@ -57,7 +57,7 @@ INSERT INTO partnerships (
 )
 VALUES (
   '21f5e518-1f74-410c-ada1-7d6f2fb54bb9',
-  '31f5e518-1f74-410c-ada1-7d6f2fb54001',
+  '8616d18e-717f-40b3-89f4-ef5adb4f95d1',
   'active',
   NOW() + INTERVAL '1 day' + INTERVAL '3 hours',
   '[
