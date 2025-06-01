@@ -103,19 +103,15 @@ export default function Courses() {
           isTablet && styles.coursesContainerTablet
         ]}
       >
-        {filteredCourses.length > 0 ? (
+        {isLoading ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateTitle}>Loading courses...</Text>
+          </View>
+        ) : filteredCourses.length > 0 ? (
           filteredCourses.map(course => (
             <CourseCard key={course.id} course={course} />
           ))
-        ) : isLoading ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateTitle}>No courses found</Text>
-            <Text style={styles.emptyStateDescription}>
-              Try adjusting your search or category filters
-            </Text>
-          </View>
-        )}
-        {!isLoading && filteredCourses.length === 0 && (
+        ) : (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateTitle}>No courses found</Text>
             <Text style={styles.emptyStateDescription}>
