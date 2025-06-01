@@ -54,7 +54,7 @@ export default function Dashboard() {
         .from('partnerships')
         .select(`
           id,
-          partner:partner_id (
+          partner:partner_id!profiles(
             id,
             name,
             image_url
