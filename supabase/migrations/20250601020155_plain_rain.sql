@@ -74,7 +74,7 @@ BEGIN
     )
     VALUES (
       demo_user_id,
-      (SELECT id FROM auth.users WHERE email = 'partner@example.com' LIMIT 1),
+      (SELECT id FROM auth.users WHERE email = 'ed1@test.com' LIMIT 1),
       'active',
       NOW() + INTERVAL '1 day' + INTERVAL '3 hours',
       '[
