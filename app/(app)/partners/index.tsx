@@ -44,25 +44,37 @@ export default function Partners() {
 
   const fetchPartners = async () => {
     try {
-      const { data, error } = await supabase
-        .from('partnerships') 
-        .select(`
-          id,
-          next_meeting,
-          partner:partner_id(*)
+          partner_id,
+          next_meeting
         `)
         .eq('user_id', user?.id)
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
+        .eq('status', 'active');
 
       if (error) throw error;
-      setPartners(data?.map(p => ({
-        id: p.partner.id,
-        name: p.partner.name,
-        interests: p.partner.interests,
-        image_url: p.partner.image_url,
-        next_meeting: p.next_meeting
-      })) || []);
+      
+      // Fetch partner profiles
+      if (data) {
+        const partnerIds = data.map(p => p.partner_id);
+        const { data: partnerProfiles, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('id', partnerIds);
+
+        if (profileError) throw profileError;
+
+        const partnersWithProfiles = data.map(partnership => {
+          const profile = partnerProfiles?.find(p => p.id === partnership.partner_id);
+          return {
+            id: partnership.partner_id,
+            name: profile?.name || 'Unknown Partner',
+            interests: profile?.interests || [],
+            image_url: profile?.image_url,
+            next_meeting: partnership.next_meeting
+          };
+        });
+
+        setPartners(partnersWithProfiles);
+      }
     } catch (error) {
       console.error('Error fetching partners:', error);
     }
@@ -71,28 +83,48 @@ export default function Partners() {
   const fetchPartnerRequests = async () => {
     try {
       const { data, error } = await supabase
-        .from('partnerships') 
+        .from('partnerships')
         .select(`
           id,
-          created_at,
-          sender:user_id(*)
+          user_id,
+          created_at
         `)
         .eq('partner_id', user?.id)
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
+        .eq('status', 'pending');
 
       if (error) throw error;
-      setRequests(data?.map(r => ({
-        id: r.id,
-        sender: r.sender,
-        requested_at: r.created_at
-      })) || []);
+      
+      // Fetch sender profiles
+      if (data) {
+        const senderIds = data.map(p => p.user_id);
+        const { data: senderProfiles, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('id', senderIds);
+
+        if (profileError) throw profileError;
+
+        const requestsWithProfiles = data.map(request => {
+          const profile = senderProfiles?.find(p => p.id === request.user_id);
+          return {
+            id: request.id,
+            sender: {
+              id: request.user_id,
+              name: profile?.name || 'Unknown User',
+              interests: profile?.interests || [],
+              image_url: profile?.image_url
+            },
+            requested_at: request.created_at
+          };
+        });
+
+        setRequests(requestsWithProfiles);
+      }
     } catch (error) {
       console.error('Error fetching partner requests:', error);
     } finally {
       setIsLoading(false);
     }
-  };
 
   const handleAcceptRequest = async (requestId: string) => {
     try {
