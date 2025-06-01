@@ -54,10 +54,12 @@ export default function Dashboard() {
         .from('partnerships')
         .select(`
           id,
-          partner:partner_id (
+          partner_id(
             id,
-            name,
-            image_url
+            profiles (
+              name,
+              image_url
+            )
           ),
           next_meeting
         `)
@@ -66,7 +68,16 @@ export default function Dashboard() {
         .single();
 
       if (!partnershipError && partnership) {
-        setPartnerData(partnership);
+        // Transform the nested data structure to match the expected format
+        const transformedPartnership = {
+          ...partnership,
+          partner: {
+            id: partnership.partner_id.id,
+            name: partnership.partner_id.profiles[0]?.name,
+            image_url: partnership.partner_id.profiles[0]?.image_url
+          }
+        };
+        setPartnerData(transformedPartnership);
       }
     } catch (error) {
       console.error('Error fetching partner data:', error);
