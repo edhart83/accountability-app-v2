@@ -48,13 +48,14 @@ export default function Partners() {
         .from('partnerships')
         .select(`
           id,
+          partner_id,
+          next_meeting,
           partner:partner_id(
             id,
             name,
             interests,
             image_url
-          ),
-          next_meeting
+          )
         `)
         .eq('user_id', user?.id)
         .eq('status', 'active');
@@ -78,13 +79,14 @@ export default function Partners() {
         .from('partnerships')
         .select(`
           id,
+          user_id,
+          created_at,
           sender:user_id(
             id,
             name,
             interests,
             image_url
-          ),
-          created_at
+          )
         `)
         .eq('partner_id', user?.id)
         .eq('status', 'pending');
