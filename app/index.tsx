@@ -1,7 +1,5 @@
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { useRouter, Redirect } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import { useAuth } from '@/context/AuthContext';
 
@@ -11,7 +9,7 @@ export default function Index() {
 
   // If authenticated, redirect to the dashboard
   if (isAuthenticated) {
-    return <Redirect href="/dashboard" />;
+    return <Redirect href="/(app)/dashboard" />;
   }
 
   // If not authenticated and not loading, redirect to login
@@ -21,11 +19,13 @@ export default function Index() {
 
   // While checking authentication status, show loading indicator
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <ActivityIndicator size="large" color="#3B82F6" />
-      <Text style={styles.text}>Loading...</Text>
-    </View>
+    Platform.OS === 'web' ? null : (
+      <View style={styles.container}>
+        <StatusBar style="auto" />
+        <ActivityIndicator size="large" color="#3B82F6" />
+        <Text style={styles.text}>Loading...</Text>
+      </View>
+    )
   );
 }
 
