@@ -45,20 +45,15 @@ export default function Partners() {
   const fetchPartners = async () => {
     try {
       const { data, error } = await supabase
-        .from('partnerships')
+        .from('partnerships') 
         .select(`
           id,
-          partner_id,
           next_meeting,
-          partner:partner_id(
-            id,
-            name,
-            interests,
-            image_url
-          )
+          partner:partner_id(*)
         `)
         .eq('user_id', user?.id)
-        .eq('status', 'active');
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setPartners(data?.map(p => ({
@@ -76,20 +71,15 @@ export default function Partners() {
   const fetchPartnerRequests = async () => {
     try {
       const { data, error } = await supabase
-        .from('partnerships')
+        .from('partnerships') 
         .select(`
           id,
-          user_id,
           created_at,
-          sender:user_id(
-            id,
-            name,
-            interests,
-            image_url
-          )
+          sender:user_id(*)
         `)
         .eq('partner_id', user?.id)
-        .eq('status', 'pending');
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setRequests(data?.map(r => ({
